@@ -1,0 +1,41 @@
+{
+	"name": "ars-poetica",
+	"description": "Ars poetica is internet magazine",
+	"type": "project",
+	"license": ["BSD-3-Clause"],
+	"authors": [
+		{
+			"name": "David Grudl",
+			"homepage": "http://davidgrudl.com"
+		},
+		{
+			"name": "Nette Community",
+			"homepage": "http://nette.org/contributors"
+		},
+		{
+			"name": "Kryštof Trkovský",
+			"homepage": "http://trko.eu"		
+		}
+	],
+	"require": {
+		"php": ">= 5.3.7",
+		"nette/application": "~2.3.0",
+		"nette/bootstrap": "~2.3.0",
+		"nette/caching": "~2.3.0",
+		"nette/database": "~2.3.0",
+		"nette/di": "~2.3.0",
+		"nette/finder": "~2.3.0",
+		"nette/forms": "~2.3.0",
+		"nette/http": "~2.3.0",
+		"nette/mail": "~2.3.0",
+		"nette/robot-loader": "~2.3.0",
+		"nette/safe-stream": "~2.3.0",
+		"nette/security": "~2.3.0",
+		"nette/utils": "~2.3.0",
+		"latte/latte": "~2.3.0",
+		"tracy/tracy": "~2.3.0"
+	},
+	"require-dev": {
+		"nette/tester": "~1.3"
+	}
+}
