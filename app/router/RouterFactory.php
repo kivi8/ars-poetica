@@ -19,8 +19,39 @@ class RouterFactory
 	 */
 	public static function createRouter()
 	{
+            $pageTranslator = [
+                'domovska-stranka' => 'Homepage',
+                'prihlasit' => 'Log',               
+                'registrovat' => 'Register',
+                'clanek' => 'Article',
+                'poslat-clanek' => 'SendArticle',
+                'nastaveni' => 'Setting',
+                'zpravy' => 'Message',
+                'umelecky-tym' => 'ArtTeam',
+                'archiv-medii' => 'MediaArchive',
+                'administrace' => 'Admin',
+                'hledat' => 'Search',
+                ];
+            
 		$router = new RouteList();
-		$router[] = new Route('<presenter>/<action>[/<id>]', 'Homepage:default');
+                
+                $router[] = new Route('hledat[/<search>]', [
+                    'presenter' => [
+                        Route::VALUE => 'Search',
+                        Route::FILTER_TABLE => ['hledat' => 'Search']
+                    ],
+                    'action' => 'default',
+                ]);
+                
+		$router[] = new Route('<presenter>/<action>[/<id>]', [
+                    'presenter' => [
+                        Route::VALUE => 'Homepage',
+                        Route::FILTER_TABLE => $pageTranslator
+                    ],
+                    'action' => 'default',
+                    'id' => NULL,
+                ]);
+               
 		return $router;
 	}
 

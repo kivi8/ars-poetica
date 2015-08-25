@@ -10,7 +10,7 @@ use Nette,
 /**
  * Users management.
  */
-class UserManager extends Nette\Object implements Nette\Security\IAuthenticator
+class UserManager extends Manager implements Nette\Security\IAuthenticator
 {
 	const
 		TABLE_NAME = 'users',

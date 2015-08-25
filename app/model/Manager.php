@@ -8,7 +8,7 @@ use Nette;
 class Manager extends Nette\Object{
     
     /** @var Nette\Database\Context */
-    private $database;
+    protected $database;
     
     public function __construct(Nette\Database\Context $database){
         
