@@ -21,76 +21,82 @@
 </head>
 
 <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-<div id="background">    
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div id="background">    
     
-    <header>
+        <header>
         
-        <div id="search" class="clearfix">
             {form searchForm}
                 {input search}
                 {input find}
             {/form}
-        </div>
         
-        <span id="main-title">Zájmový občasník mladé generace</span>
+            <span id="main-title">Zájmový občasník mladé generace</span>
         
-        <div id="main-menu-wrapper">
+            <div id="main-menu-wrapper">
             
-            <div class="main-menu"><a href="#">O nás</a></div>       
-            <div class="main-underline"></div>
+                <div class="main-menu"><a href="#">O nás</a></div>       
+                <div class="main-underline"></div>
             
-            <div class="main-menu"><a href="#">Fórum</a></div>
-            <div class="main-underline"></div>
+                <div class="main-menu"><a href="#">Fórum</a></div>
+                <div class="main-underline"></div>
             
-            <div class="main-menu"><a href="#">Redakce</a></div>
-            <div class="main-underline"></div>
+                <div class="main-menu"><a href="#">Redakce</a></div>
+                <div class="main-underline"></div>
             
-            <div class="main-menu"><a href="#">Kontakt</a></div>
-            <div class="main-underline"></div>
-        </div>
+                <div class="main-menu"><a href="#">Kontakt</a></div>
+                <div class="main-underline"></div>
+            </div>
         
-    </header>     
-            
-        <div id="logo"></div>
-        
-            <nav>
-                <ul>
-                    <li class="firstMenu"><a class="activeMenu" href="/">Úvod</a></li>
-                    <li><a href="#">Věda</a></li>
-                    <li><a href="#">Umění</a></li>
-                    <li><a href="#">Zájmy</a></li>
-                    <li><a href="#">Společnost</a></li>
-                </ul>              
-            </nav>           
-                
-      
-        <header>
-            <h1>{ifset title}{include title}{/ifset}</h1>
-            
         </header>
-    
-	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
         
-	<div id="body">
+        <a href="/"><div id="logo"></div></a>
+        
+        <nav>
+            <ul>
+                <li><a href="#">
+                        <div class="menu-back">Věda</div>
+                        
+                    </a></li>
+                <li><a href="#">
+                        <div class="menu-back">Umění</div>
+                    </a></li>
+                <li><a href="#">
+                        <div class="menu-back">Zájmy</div>
+                    </a></li>
+                <li class="active-menu"><a href="#">
+                        <div class="menu-back">Společnost</div>
+                    </a></li>
+            </ul>              
+        </nav>           
+                  
             
-            <article>           
-                {include content}
-            </article>
-            
-            <aside>
+    
+        <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
+        
+        <div id="body">
+            <h1>{ifset title}{include title}{/ifset}</h1>
+                      
+                <aside>
+                    <h2>Nadpis 2</h2>
+                    Vteřinu dubnu působila sorta inteligence emisí ke všehoweiler dní holinkách od poznání rovněž. Uchu osoba dá potvrdili, přirazíme záplavy budete z kladení jí sledování
+                </aside>
                 
-            </aside>
+                <article>   
+                    {include content}
+                </article>
                 
+                <div class="clearfix"></div>
         </div>
             
         <footer>
-            
-        </footer>    
-            
-	{block scripts}
+            FOOTER COPYRIGHT
+        </footer>   
+    </div>    
+                
+    {block scripts}
         <script src="{$basePath}/js/vendor/jquery.js"></script>
         <script src="{$basePath}/js/vendor/netteForms.js"></script>
         <script src="{$basePath}/js/main.js"></script>
@@ -104,6 +110,6 @@
             ga('create', 'UA-66651477-1', 'auto');
             ga('send', 'pageview');
         </script>
-	{/block}
+    {/block}
 </body>
 </html>

@@ -1,426 +1,47 @@
-/* line 12, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000312}}
-html {
-  color: #222;
-  font-size: 1em;
-  line-height: 1.4;
-}
-/* line 18, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000318}}
-::-moz-selection {
-  background: #ffcdcd;
-  text-shadow: none;
-}
-/* line 23, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000323}}
-::selection {
-  background: #ffcdcd;
-  text-shadow: none;
-}
-/* line 30, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000330}}
-::-webkit-input-placeholder {
-  /* WebKit, Blink, Edge */
-
-  font-style: italic;
-  color: #ff4e4e;
-}
-/* line 34, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000334}}
-:-moz-placeholder {
-  /* Mozilla Firefox 4 to 18 */
-
-  font-style: italic;
-  color: #ff4e4e;
-  opacity: 1;
-}
-/* line 39, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000339}}
-::-moz-placeholder {
-  /* Mozilla Firefox 19+ */
-
-  font-style: italic;
-  color: #ff4e4e;
-  opacity: 1;
-}
-/* line 44, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000344}}
-:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-
-  font-style: italic;
-  color: #ff4e4e;
-}
-/* line 49, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000349}}
-hr {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 1em 0;
-  padding: 0;
-}
-/* line 58, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000358}}
-audio,
-canvas,
-iframe,
-img,
-svg,
-video {
-  vertical-align: middle;
-}
-/* line 67, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000367}}
-fieldset {
-  border: 0;
-  margin: 0;
-  padding: 0;
-}
-/* line 73, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000373}}
-textarea {
-  resize: vertical;
-}
-/* line 77, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000377}}
-.browserupgrade {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #231f20;
-  padding: 0.2em 0;
-}
-/* line 85, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000385}}
-body {
-  font-size: 15px;
-  line-height: 1.6;
-  color: #231f20;
-  background: #ffffff;
-  background-image: url("../images/bg-1.png"), url("../images/bg-2.png");
-  background-repeat: repeat-x, repeat;
-}
-/* line 95, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000395}}
-h1 {
-  color: #3484D2;
-}
-/* line 99, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\0000399}}
-#ajax-spinner {
-  margin: 15px 0 0 15px;
-  padding: 13px;
-  background: #ffffff url('../images/spinner.gif') no-repeat 50% 50%;
-  font-size: 0;
-  z-index: 123456;
-  display: none;
-}
-/* line 108, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003108}}
-div.flash {
-  color: black;
-  background: #FFF9D7;
-  border: 1px solid #E2C822;
-  padding: 1em;
-  margin: 1em 0;
-}
-/* line 116, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003116}}
-a[href^="#error:"] {
-  background: red;
-  color: white;
-}
-/* line 121, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003121}}
-form th,
-form td {
-  vertical-align: top;
-  font-weight: normal;
-}
-/* line 126, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003126}}
-form th {
-  text-align: right;
-}
-/* line 130, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003130}}
-form .required label {
-  font-weight: bold;
-}
-/* line 134, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003134}}
-form .error {
-  color: #D00;
-  font-weight: bold;
-}
-/* line 139, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003139}}
-#background {
-  background-color: #FFFFFF;
-  margin: 0 auto;
-  width: 1000px;
-}
-/* ==========================================================================
-   Head
-   ========================================================================== */
-/* line 149, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003149}}
-#logo {
-  background-image: url("/images/logo.png");
-  width: 770px;
-  height: 300px;
-  margin: 0px auto;
-}
-/* line 156, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003156}}
-header {
-  margin-right: 20px;
-  margin-left: 20px;
-}
-/* line 162, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003162}}
-#main-title {
-  font-size: 35px;
-  font-family: Franklin Gothic Book;
-}
-/* line 168, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003168}}
-.main-menu a {
-  text-decoration: none;
-  color: #ed1c24;
-}
-/* line 175, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003175}}
-#main-menu-wrapper .main-underline {
-  width: 100%;
-  border-bottom: #7b7979 1px dotted;
-}
-/* line 181, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003181}}
-#main-menu-wrapper div a {
-  text-decoration: none;
-  color: #ed1c24;
-}
-/* line 190, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003190}}
-#search {
-  border: #231f20 4px solid;
-  width: 200px;
-  height: 25px;
-  background: #FFFFF;
-}
-/* line 197, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003197}}
-#search input {
-  margin: 0;
-  appearance: none;
-  box-shadow: none;
-  border-radius: none;
-  border: none;
-  height: 20px;
-}
-/* line 207, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003207}}
-#search input[type="text"] {
-  float: left;
-  width: 163px;
-  height: 23px;
-  padding: 1px 2px;
-}
-/* line 215, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003215}}
-#search input[type="submit"] {
-  float: right;
-  width: 33px;
-  height: 25px;
-  background: #231f20 url("../images/search.png") no-repeat right bottom;
-}
-/* line 222, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003222}}
-#search input[type="submit"]:hover {
-  background-size: 22px 22px;
-}
-/* line 230, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003230}}
-nav {
-  width: 960px;
-  margin: 25px auto;
-  text-align: center;
-  border-top: #231f20 3px solid;
-  border-bottom: #231f20 3px solid;
-}
-/* line 240, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003240}}
-nav ul {
-  margin: 0;
-  list-style: none;
-}
-/* line 245, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003245}}
-nav ul li {
-  display: inline-block;
-  margin: 2px 10px 2px 10px;
-}
-/* line 249, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003249}}
-nav ul li a {
-  color: #7b7979;
-  font-size: 20px;
-  font-family: arial;
-  text-decoration: none;
-}
-/* ==========================================================================
-   Body
-   ========================================================================== */
-/* line 267, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003267}}
-#body {
-  background: #FFFFFF;
-  width: 960px;
-  padding: 20px;
-  margin: 20px auto;
-}
-/* ==========================================================================
-   Media Queries
-   ========================================================================== */
-@media only screen and (min-width: 35em) {
-  
-}
-@media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
-  
-}
-/* line 290, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003290}}
-.hidden {
-  display: none !important;
-  visibility: hidden;
-}
-/* line 295, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003295}}
-.visuallyhidden {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
-/* line 306, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003306}}
-.visuallyhidden.focusable:active,
-.visuallyhidden.focusable:focus {
-  clip: auto;
-  height: auto;
-  margin: 0;
-  overflow: visible;
-  position: static;
-  width: auto;
-}
-/* line 316, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003316}}
-.invisible {
-  visibility: hidden;
-}
-/* line 320, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003320}}
-.clearfix:before,
-.clearfix:after {
-  content: " ";
-  display: table;
-}
-/* line 326, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003326}}
-.clearfix:after {
-  clear: both;
-}
-/* line 330, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003330}}
-.clearfix {
-  *zoom: 1;
-}
-/* ==========================================================================
-   Print styles
-   ========================================================================== */
-@media print {
-  /* line 339, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003339}}
-  *,
-  *:before,
-  *:after {
-    background: transparent !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-  /* line 348, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003348}}
-  a,
-  a:visited {
-    text-decoration: underline;
-  }
-  /* line 353, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003353}}
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-  /* line 357, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003357}}
-  abbr[title]:after {
-    content: " (" attr(title) ")";
-  }
-  /* line 361, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003361}}
-  a[href^="#"]:after,
-  a[href^="javascript:"]:after {
-    content: "";
-  }
-  /* line 366, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003366}}
-  pre,
-  blockquote {
-    border: 1px solid #999;
-    page-break-inside: avoid;
-  }
-  /* line 372, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003372}}
-  thead {
-    display: table-header-group;
-  }
-  /* line 376, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003376}}
-  tr,
-  img {
-    page-break-inside: avoid;
-  }
-  /* line 381, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003381}}
-  img {
-    max-width: 100% !important;
-  }
-  /* line 385, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003385}}
-  p,
-  h2,
-  h3 {
-    orphans: 3;
-    widows: 3;
-  }
-  /* line 392, /media/krystof/DATA/KT/Programování/web-php/ars-poetica/www/css/main.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/\/media\/krystof\/DATA\/KT\/Programování\/web-php\/ars-poetica\/www\/css\/main\.less}line{font-family:\00003392}}
-  h2,
-  h3 {
-    page-break-after: avoid;
-  }
-}
-/* ==========================================================================
-   Fonts
-   ========================================================================== */
-@font-face {
-  font-family: 'Franklin Gothic Book';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Franklin Gothic Book'), url('FRABK.woff') format('woff');
-}
+html{font-size:1em;line-height:1.4}
+::-moz-selection{background:#f64c52;text-shadow:none}
+::selection{background:#f64c52;text-shadow:none}
+::-webkit-input-placeholder{font-style:italic;color:#ed1c24}
+:-moz-placeholder{font-style:italic;color:#ed1c24;opacity:1}
+::-moz-placeholder{font-style:italic;color:#ed1c24;opacity:1}
+:-ms-input-placeholder{font-style:italic;color:#ed1c24}
+hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}
+audio,canvas,iframe,img,svg,video{vertical-align:middle}
+fieldset{border:0;margin:0;padding:0}
+textarea{resize:vertical}
+.browserupgrade{margin:.2em 0;background:#ccc;color:#231f20;padding:.2em 0}
+body{font-size:15px;line-height:1.6;color:#231f20;background:#fff;background-image:url("../images/bg-1.png"),url("../images/bg-2.png");background-repeat:repeat-x,repeat}
+h1{color:#ce3b40}
+#ajax-spinner{margin:15px 0 0 15px;padding:13px;background:#fff url('../images/spinner.gif') no-repeat 50% 50%;font-size:0;z-index:123456;display:none}
+div.flash{color:#000;background:#fff9d7;border:1px solid #e2c822;padding:1em;margin:1em 0}
+a[href^="#error:"]{background:#f00;color:#fff}
+form th,form td{vertical-align:top;font-weight:normal}
+form th{text-align:right}
+form .required label{font-weight:bold}
+form .error{color:#d00;font-weight:bold}
+#background{padding:20px;background-color:#fff;margin:0 auto;max-width:900px}
+#logo{background-image:url("/images/logo.png");width:778px;height:289px;margin:0 auto;position:absolute;left:0;right:0;top:70px}
+header{text-align:right;margin-bottom:150px}
+#main-title{font-size:35px;font-family:Franklin Gothic Book}
+.main-menu a{font-size:18px;text-decoration:none;color:#ed1c24}
+#main-menu-wrapper .main-underline{width:100%;border-bottom:#7b7979 1px dotted}
+#main-menu-wrapper div a{text-decoration:none;color:#ed1c24;border-left:#fff 2px solid;border-right:#fff 2px solid;padding:0 4px}#main-menu-wrapper div a:hover{border-left:#7b7979 2px solid;border-right:#7b7979 2px solid}
+#frm-searchForm{border:#231f20 4px solid;width:200px;height:25px;background:#fff;margin:0 0 0 auto}#frm-searchForm input{margin:0;appearance:none;box-shadow:none;border-radius:none;border:none;height:20px}
+#frm-searchForm input[type="text"]{float:left;width:165px;height:23px;padding:1px 2px}
+#frm-searchForm input[type="submit"]{float:right;width:31px;height:25px;background:#231f20 url("../images/search.png") no-repeat center center;border-left:#231f20 4px solid}#frm-searchForm input[type="submit"]:hover{background-size:22px 22px}
+nav{width:900px;margin:20px auto;text-align:center;border-top:#231f20 3px solid;border-bottom:#231f20 3px solid}nav ul{padding:0;margin:0;list-style:none}nav ul li{display:inline-block;width:200px;height:37px;border-left:#fff 3px solid;border-right:#fff 3px solid}nav ul li .menu-back{height:37px}
+nav ul li:hover{border-left:#ed1c24 3px solid;border-right:#ed1c24 3px solid;color:#696868}nav ul li:hover .menu-back{color:#231f20;background-color:#d2d2d2}
+nav ul li a{color:#696868;font-size:23px;font-family:arial;font-weight:bold;text-decoration:none}
+.active-menu{border-left:#ed1c24 3px solid;border-right:#ed1c24 3px solid}.active-menu div{color:#231f20}
+#body{background:#fff;width:900px;margin:20px auto}
+article{width:668px;border-right:#7b7979 2px solid;padding-right:15px}
+aside{width:200px;margin:auto 0 auto 0;float:right;border-left:#7b7979 2px solid;padding-left:15px}
+footer{border-top:#231f20 3px solid}
+@media only screen and (min-width:35em){}@media print,(-o-min-device-pixel-ratio:5/4),(-webkit-min-device-pixel-ratio:1.25),(min-resolution:120dpi){}.hidden{display:none !important;visibility:hidden}
+.visuallyhidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}
+.visuallyhidden.focusable:active,.visuallyhidden.focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}
+.invisible{visibility:hidden}
+.clearfix:before,.clearfix:after{content:" ";display:table}
+.clearfix:after{clear:both}
+.clearfix{*zoom:1}
+@media print{*,*:before,*:after{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important} a,a:visited{text-decoration:underline} a[href]:after{content:" (" attr(href) ")"} abbr[title]:after{content:" (" attr(title) ")"} a[href^="#"]:after,a[href^="javascript:"]:after{content:""} pre,blockquote{border:1px solid #999;page-break-inside:avoid} thead{display:table-header-group} tr,img{page-break-inside:avoid} img{max-width:100% !important} p,h2,h3{orphans:3;widows:3} h2,h3{page-break-after:avoid}}@font-face{font-family:'Franklin Gothic Book';font-style:normal;font-weight:normal;src:local('Franklin Gothic Book'),url('FRABK.woff') format('woff')}

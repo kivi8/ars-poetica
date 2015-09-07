@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use Nette,
-	App\Model;
+    App\Forms\RegisterFormFactory;
 
 
 /**
@@ -11,7 +11,15 @@ use Nette,
  */
 class RegisterPresenter extends BasePresenter{
     
-    public function renderDefault(){
+    protected function createComponentRegisterForm(){
         
+        $form = (new RegisterFormFactory($this->user))->create();
+        
+        $form->onSuccess[] = (function (){
+            $this->goHome('Uživatel ' .$this->user->getIdentity()->name. ' byl přihlášen');
+        });
+        
+        
+        return $form;
     }
 }

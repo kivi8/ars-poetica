@@ -1,0 +1,9 @@
+parameters:
+
+
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=ars-poetica'
+	user: user
+	password: password
+	options:
+		lazy: yes
