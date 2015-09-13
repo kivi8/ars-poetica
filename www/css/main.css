@@ -13,13 +13,14 @@ textarea{resize:vertical}
 body{font-size:15px;line-height:1.6;color:#231f20;background:#fff;background-image:url("../images/bg-1.png"),url("../images/bg-2.png");background-repeat:repeat-x,repeat}
 h1{color:#ce3b40}
 #ajax-spinner{margin:15px 0 0 15px;padding:13px;background:#fff url('../images/spinner.gif') no-repeat 50% 50%;font-size:0;z-index:123456;display:none}
-div.flash{color:#000;background:#fff9d7;border:1px solid #e2c822;padding:1em;margin:1em 0}
+div.flash{background:#d6d1d2;border-top:2px solid #3e3739;border-bottom:2px solid #3e3739;padding:1em;margin:1em 0}
 a[href^="#error:"]{background:#f00;color:#fff}
 form th,form td{vertical-align:top;font-weight:normal}
 form th{text-align:right}
 form .required label{font-weight:bold}
 form .error{color:#d00;font-weight:bold}
 #background{padding:20px;background-color:#fff;margin:0 auto;max-width:900px}
+.import-act{color:#ed1c24}
 #logo{background-image:url("/images/logo.png");width:778px;height:289px;margin:0 auto;position:absolute;left:0;right:0;top:70px}
 header{text-align:right;margin-bottom:150px}
 #main-title{font-size:35px;font-family:Franklin Gothic Book}

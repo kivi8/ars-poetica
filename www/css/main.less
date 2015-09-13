@@ -105,9 +105,9 @@ h1 {
 }
 
 div.flash {
-	color: black;
-	background: #FFF9D7;
-	border: 1px solid #E2C822;
+	background: lighten(@black, 70%);
+	border-top: 2px solid lighten(@black, 10%);
+        border-bottom: 2px solid lighten(@black, 10%);
 	padding: 1em;
 	margin: 1em 0;
 }
@@ -140,6 +140,10 @@ form .error {
     background-color: #FFFFFF;
     margin: 0 auto;
     max-width: @pageWidth;
+}
+
+.import-act{
+    color: @red;
 }
 
 /* ==========================================================================

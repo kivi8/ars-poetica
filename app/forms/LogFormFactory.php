@@ -49,7 +49,7 @@ class LogFormFactory extends Nette\Object
 		}
 
 		try {
-			$this->user->login($values->username, $values->password);
+			$this->user->login($values->nick, $values->password);
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError($e->getMessage());
 		}

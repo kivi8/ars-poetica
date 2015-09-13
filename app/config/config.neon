@@ -20,5 +20,10 @@ session:
 
 services:
 	- App\Model\UserManager
+	- App\Model\SendMailManager
 	- App\Forms\LogFormFactory
+	- App\Forms\RegisterFormFactory
+	- App\Forms\LostPassForm
+	- App\Forms\NewPassForm
+	- App\Forms\SettingFormFactory
 	router: App\RouterFactory::createRouter

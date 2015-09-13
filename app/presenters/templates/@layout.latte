@@ -82,6 +82,19 @@
                 <aside>
                     <h2>Nadpis 2</h2>
                     Vteřinu dubnu působila sorta inteligence emisí ke všehoweiler dní holinkách od poznání rovněž. Uchu osoba dá potvrdili, přirazíme záplavy budete z kladení jí sledování
+                    
+                    
+                    {if $user->isLoggedIn()}
+                        <a n:href="Log:out">Odhlásit</a>
+                        
+                        <a n:href="Setting:">Osobní nastavení</a>
+                    {else}
+                        <a n:href="Log:in">Přihlásit</a>
+                        <a n:href="Log:register">Registrovat</a>
+                        <a n:href="Log:lostPass">Ztracené heslo</a>
+                    {/if}    
+                    
+                    
                 </aside>
                 
                 <article>   
@@ -111,5 +124,9 @@
             ga('send', 'pageview');
         </script>
     {/block}
+    
+    {ifset #script}
+        {include script}
+    {/ifset}    
 </body>
 </html>

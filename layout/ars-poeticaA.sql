@@ -5,10 +5,6 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-DROP DATABASE IF EXISTS `ars-poetica`;
-CREATE DATABASE `ars-poetica` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `ars-poetica`;
-
 DROP TABLE IF EXISTS `action`;
 CREATE TABLE `action` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

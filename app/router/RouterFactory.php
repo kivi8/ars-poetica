@@ -17,12 +17,11 @@ class RouterFactory
 	/**
 	 * @return \Nette\Application\IRouter
 	 */
-	public static function createRouter()
-	{
-            $pageTranslator = [
+	public static function createRouter(){
+	
+            $presenterTranslator = [
                 'domovska-stranka' => 'Homepage',
-                'prihlasit' => 'Log',               
-                'registrovat' => 'Register',
+                'uzivatel' => 'Log',
                 'clanek' => 'Article',
                 'poslat-clanek' => 'SendArticle',
                 'nastaveni' => 'Setting',
@@ -33,25 +32,36 @@ class RouterFactory
                 'hledat' => 'Search',
                 ];
             
+            $actionTranslator = [
+                'prihlasit' => 'in',
+                'odhlasit' => 'out',
+                'registrovat' => 'register',
+                'ztracene-heslo' => 'lostPass',
+                'overit' => 'confimNewUser',
+                'nove-heslo' => 'newPass',
+            ];
+            
 		$router = new RouteList();
                 
                 $router[] = new Route('hledat[/<search>]', [
-                    'presenter' => [
-                        Route::VALUE => 'Search',
-                        Route::FILTER_TABLE => ['hledat' => 'Search']
-                    ],
+                    'presenter' => 'Search',
                     'action' => 'default',
                 ]);
-                
+                                                                                                                                         
 		$router[] = new Route('<presenter>/<action>[/<id>]', [
                     'presenter' => [
                         Route::VALUE => 'Homepage',
-                        Route::FILTER_TABLE => $pageTranslator
+                        Route::FILTER_STRICT => true,
+                        Route::FILTER_TABLE => $presenterTranslator
                     ],
-                    'action' => 'default',
+                    'action' => [
+                        Route::VALUE => 'default',
+                        Route::FILTER_STRICT => true,
+                        Route::FILTER_TABLE => $actionTranslator
+                    ],
                     'id' => NULL,
                 ]);
-               
+                                                               
 		return $router;
 	}
 
