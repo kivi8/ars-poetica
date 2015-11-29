@@ -1,0 +1,17 @@
+{block content}
+
+{if $user->isAllowed('FastNews', 'add') || $user->isAllowed('FastNews', 'moderate')}
+    <a n:href="News:">Rychlé zprávy</a>
+{/if}  
+
+{if $user->isAllowed('Comments', 'moderate')}
+    <a n:href="Comments:">Komentáře</a>
+{/if}  
+
+{if $user->isAllowed('User', 'moderate') || $user->isAllowed('User', 'see')|| $user->isAllowed('User', 'add') || $user->isAllowed('User', 'prohibit')}
+    <a n:href="User:">Uživatelé</a>
+{/if}
+
+{if $user->isAllowed('Section', 'moderate') || $user->isAllowed('Article', 'moderate') || $user->isAllowed('Article', 'add')}
+    <a n:href="Article:">Články, sekce</a>
+{/if}
