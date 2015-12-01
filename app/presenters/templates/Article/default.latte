@@ -1,4 +1,50 @@
-{block title}Články{/block}
-
 {block content}
 
+{ifset $customFlashMessage}
+    <div class="flash">{$customFlashMessage}</div>
+{/ifset}
+
+{if $articles}
+    
+    
+    
+    <div n:foreach="$articles as $article" class="article-main col-md-6">
+        
+        <a n:href="Article:article, $article->url"><img src="/media/{$article->id}/{$article->photo}" alt="Obrázek k článku"></a>
+        
+        <div class="article-info"><a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($article->ref('byUser'), false)}</a> {$article->date|date:'%d.%m.%Y'} {if $article->underSection}{$article->ref('underSection')->name}{/if}{if $article->underSubSection}\{$article->ref('underSubSection')->name}{/if}</div>
+        
+        <div class="article-title">{$article->title}</div>
+        <div class="article-desc">{$article->description}</div>
+        <a class="article-read" n:href="Article:article, $article->url">Číst celý článek</a>
+    </div>    
+    
+    
+    
+    
+    
+{else}
+    <span class="warning">Žádné články</span>
+{/if}    
+
+
+
+
+
+
+
+{define right-column}
+<h2>EDITORIAL</h2>
+
+<h4>Vítejte na stránkách Ars Poetica!</h4>
+
+Ars poetica vznikl jako projekt, který si klade za cíl dát lidem kolem prostor ke sdílení zajímavých věcí, pohledů, zkušeností a výtvorů. Toho se snažíme docílit dvěma způsoby. Prvním je založení časopisu, kde chceme dát prostor hlavně psanému slovu, ale také výtvarnému umění ve formě kreseb, fotografií, videí.
+
+Druhým způsobem si náš cíl chceme splnit pomocí pořádání živých akcí, kde chceme dát lidem příležitost sdílet na koncertech, autorských čtení nebo také výstavách.
+
+Chceme sdílet zajímavé a chceme, aby mohl sdílet kdokoliv. Jsme otevření jakékoliv spolupráci, ale také pomoci. Chcete se zapojit, navázat spolupráci nebo se jenom zeptat?
+
+Kontaktujte nás!
+
+
+{/define}

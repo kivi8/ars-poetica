@@ -31,7 +31,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $form->addText('search', '')
             ->setAttribute('placeholder', 'Vyhledávání');
         
-        $form->addSubmit('find', ' ');
+        $form->addSubmit('find', '');
         
         $form->onSuccess[] = [$this, 'searchFormSucceeded'];
         return $form;

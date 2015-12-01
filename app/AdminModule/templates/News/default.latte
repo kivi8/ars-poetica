@@ -36,12 +36,18 @@
 {/foreach}
 
 {if $paginator->getLastPage() != 1}
+<ul class="pagination">    
 {for $page = 1; $page <= $paginator->getLastPage(); $page++}
     {if $page == $paginator->page}
-        {$page}
+        <li class="active">
+            <span>{$page}</span>
+        </li>    
     {else}
-        <a class="ajax" n:href="page! $page, $for">{$page} </a>
+        <li>
+            <a class="ajax" n:href="page! $page, $for">{$page} </a>
+        </li>    
     {/if}    
 {/for}
+</ul>
 {/if}
 {/define}

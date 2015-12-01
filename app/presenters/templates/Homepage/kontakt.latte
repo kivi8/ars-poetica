@@ -1,0 +1,45 @@
+{define title}Kontakt{/define}
+{block content}
+
+<p>Chcete se zapojit? Máte nápad, otázku, stížnost nebo pochvalu? Napište nám!</p>
+<p>E-mail: <a href="mailto:arspoetica@email.cz">arspoetica@email.cz</a></p>
+<p>Facebook: <a href="https://www.facebook.com/arspoetica.net">www.facebook.com/arspoetica.net</a></p>
+<p>
+    <h4 class="inline">Nebo nám cokoliv napište: </h4> <h3 class="inline"> <a n:href="SendArticle:">Poslat rovnou do redakce</a> !</h3>
+</p>
+
+<hr>
+
+{snippet captcha}
+{form newWriterForm}
+    <table>
+    
+    <tr>
+        <th>{label text /}</th>       
+        <td>{input text}</td>   
+    </tr> 
+    
+    {if !$user->isLoggedIn()}
+        <tr class="required">
+            <th>{label contact /}</th>       
+            <td>{input contact}</td>   
+        </tr> 
+    {/if}
+    
+    
+    </table>
+    
+
+    {if !$user->isLoggedIn()}
+    <div class="captcha">
+        <img src="/captcha?t={rand(0,10000)}" src="captcha image" />
+        <a class="ajax" n:href="NewCaptcha!">Nová otázka</a>
+        <div>
+            {input captcha}
+        </div>
+    </div>  
+    {/if}
+     
+    {input submit, class=>bigSubmit}
+{/form} 
+{/snippet captcha}

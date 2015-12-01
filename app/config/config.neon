@@ -28,6 +28,6 @@ services:
 	- App\Forms\LostPassForm
 	- App\Forms\NewPassForm
 	- App\Forms\SettingFormFactory
-	router: App\RouterFactory::createRouter
+	router: App\RouterFactory::createRouter(@App\Model\ArticleManager)
 	app.authorizatorFactory: App\Authorization\AuthorizatorFactory
 	app.authorizator: @app.authorizatorFactory

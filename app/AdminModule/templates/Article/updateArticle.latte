@@ -31,8 +31,13 @@
         </tr>
         
         <tr class="required">
+            <th>{label description /}</th>
+            <td>{input description}</td>
+        </tr>
+        
+        <tr class="required">
             <th>{label text /}</th>
-            <td>{input text, class=>articleText}</td>
+            <td>{input text}</td>
         </tr>
         
         <tr>
@@ -73,9 +78,9 @@
     
     <div>
         <h4 class="arrowText">Přidat sekci <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
-        <div class="hide">
+        <div class="hide-box">
             <input type="text" name="addSection">
-            <span class="button" id="addNewAjaxSection">Přidat</span>
+            <span class="btn btn-default" id="addNewAjaxSection">Přidat</span>
         </div>
     </div>
     {/snippet}      
@@ -89,9 +94,9 @@
                
         <div>
         <h4 class="arrowText">Přidat podsekci pod: <span id = "subSection"></span> <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
-        <div class="hide">
+        <div class="hide-box">
             <input type="text" name="addSection">
-            <span class="button" id="addNewAjaxSubSection">Přidat</span>
+            <span class="btn btn-default" id="addNewAjaxSubSection">Přidat</span>
         </div>
         </div>
     
@@ -105,11 +110,11 @@
             <div>
                 <h4 class="arrowText">Přidat serial pod: <span id = "serial"></span> <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
                                
-                <div class="hide">
+                <div class="hide-box">
                     <input type="text" name="addSection">
-                    <span class="button" id="addNewAjaxSerial">Přidat</span>
+                    <span class="btn btn-default" id="addNewAjaxSerial">Přidat</span>
                 </div>
-                </div>
+            </div>
         {/snippet}      
         
         
@@ -138,7 +143,7 @@
         
     {/snippet}             
     <script>
-        $('#addNewAjaxSection').click(function() {
+        $('#addNewAjaxSection').on('click', function() {
             $.nette.ajax({
                 type: 'GET',
                 url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=addNewAjaxSection',
@@ -148,7 +153,7 @@
             });
         });
         
-        $('#addNewAjaxSubSection').click(function() {
+        $('#addNewAjaxSubSection').on('click',function() {
             $.nette.ajax({
                 type: 'GET',
                 url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=addNewAjaxSection',
@@ -159,7 +164,7 @@
             });
         });
         
-        $('#addNewAjaxSerial').click(function() {
+        $('#addNewAjaxSerial').on('click',function() {
             $.nette.ajax({
                 type: 'GET',
                 url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=addNewAjaxSection',
@@ -185,7 +190,7 @@
     tinymce.init({
                         language: "cs",    
                         theme: "modern",                        
-                        selector: ".articleText",
+                        selector: "#frm-updateArticle-text",
                         plugins: [
                                 "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                                 "searchreplace wordcount visualblocks visualchars code fullscreen",

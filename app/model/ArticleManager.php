@@ -46,6 +46,12 @@ class ArticleManager extends Manager{
                 ->fetchPairs('id', 'name');
     }
     
+    public function getSubSectionFor($section){
+        
+        return $this->subSectionDat()->where('underSection', $section)
+                ->order('itemOrder');
+    }
+    
     /**
      * Returns list of serials for user
      * @param type $forSub
@@ -93,6 +99,11 @@ class ArticleManager extends Manager{
     public function getSection($id, $subSection = 'sectionDat'){
         
         return $this->$subSection()->where('id', $id)->fetch();
+    }
+    
+    public function getSectionByUrl($url, $what = 'sectionDat'){
+        
+        return $this->$what()->where('url', $url)->fetch();
     }
     
     /**
@@ -218,6 +229,24 @@ class ArticleManager extends Manager{
         return $this->articleDat()->where('url', $url)->fetch();
     }
     
+    public function getArticleNotSubsection($section){
+        
+        return $this->articleDat()->where('underSection = ? AND deleted != 1  AND underSubSection IS NULL', $section->id)->fetchAll();
+    }
+    
+    public function getArticleBySubSection($subSection){
+        
+        return $this->articleDat()->where('underSubSection = ? AND deleted != 1', $subSection->id)->fetchAll();
+    }
+    
+    
+    public function getNewArticleList(){
+        
+        return $this->articleDat()->where('deleted != 1')
+                ->order('date')
+                ->limit(10)
+                ->fetchAll();
+    }
     
     public function addArticle($userId, $values){
         
@@ -228,7 +257,9 @@ class ArticleManager extends Manager{
             'url' => $this->checkUnique($values->title, 'articleDat'),
             'title' => $values->title,
             'text' => $values->text,
+            'description' => $values->description,
             'keyWords' => $values->keyWords,
+            'photo' => $values->photo,
             'underSection' => $values->underSection === 0?null:$values->underSection,
             'underSubSection' => $values->underSubSection === 0?null:$values->underSubSection,
             'underSerial' => $values->underSerial === 0?null:$values->underSerial,
@@ -269,12 +300,7 @@ class ArticleManager extends Manager{
         
         $this->articleDat()->where('id', $values->id)->update($data);
     }
-    
-    
-    
-    
-    
-    /**
+     /**
      * Check if url is unique. If not add number
      * @param string $title
      * @return string

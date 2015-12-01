@@ -3,7 +3,14 @@
 {block content}
 
 {snippet users}
-   <table>      
+   <table class="table table-hover">           
+        <thead>
+            <tr>
+                <td>Jméno</td>
+                <td></td>
+            </tr> 
+        </thead>  
+  <tbody>      
       <tr n:foreach="$userList['allowed'] as $id=>$name">
           
           <td>
@@ -17,12 +24,20 @@
           <td  n:if="$user->isAllowed('User', 'prohibit')">
               <a class="ajax" n:href="prohibitUser! $id, true">Zablokovat</a>
           </td>
-      </tr>          
+      </tr> 
+    </tbody>  
    </table>
               
    <h2>Blokovaní uživatelé</h2>
    
-   <table>      
+   <table class="table table-hover"> 
+       <thead>
+        <tr>
+          <td>Jméno</td>
+          <td></td>
+        </tr>   
+       </thead> 
+       <tbody>
       <tr n:foreach="$userList['deleted'] as $id=>$name">
         <td>
           {if $user->isAllowed('User', 'moderate')}
@@ -34,7 +49,8 @@
           <td  n:if="$user->isAllowed('User', 'prohibit')">
               <a class="ajax" n:href="prohibitUser! $id, false">Povolit</a>
           </td>
-      </tr>          
+      </tr> 
+      </tbody>
    </table>  
 {/snippet}               
 

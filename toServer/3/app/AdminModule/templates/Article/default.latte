@@ -1,6 +1,0 @@
-{define title}Články - administrace{/define}
-{block content}
-
-<a n:if="$user->isAllowed('Section', 'moderate')" n:href="Article:section">Upravit sekce</a>
-
-<a n:if="$user->isAllowed('Article', 'add') || $user->isAllowed('Article', 'moderate')" n:href="Article:addArticle">Přidat článek</a>

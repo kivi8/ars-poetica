@@ -1,0 +1,33 @@
+{block title}{$section->name}{/block}
+
+{block content}
+
+<ol class="breadcrumb">
+  <li>
+      <a href="Homepage:">Domů</a>
+  </li>
+  <li n:if="empty($subSections)">
+      <a n:href="Article:default, $section->ref('underSection')->url">{$section->ref('underSection')->name}</a>     
+  </li>
+  <li class="active">
+      {$section->name}     
+  </li>
+</ol>
+
+{$section->description}
+
+{foreach $articles as $article}
+    <div class="article">
+    <a n:href="Article:article, $article->url">{$article->title}</a>
+    {$article->description}
+    {$article->keyWords}
+    {$article->photo}
+    {$article->date}
+    </div>
+{/foreach}    
+
+{foreach $subSections as $subSection}
+    <a n:href="Article:default, $section->url ,$subSection->url">{$subSection->name}</a>
+    
+    
+{/foreach}

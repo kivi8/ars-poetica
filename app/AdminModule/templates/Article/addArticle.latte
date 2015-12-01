@@ -11,6 +11,11 @@
         </tr>
         
         <tr class="required">
+            <th>{label description /}</th>
+            <td>{input description}</td>
+        </tr>
+        
+        <tr class="required">
             <th>{label text /}</th>
             <td>{input text}</td>
         </tr>
@@ -99,7 +104,7 @@ $('#{$control["addArticle"][$input]->htmlId}').on('change', function() {
     tinymce.init({
                         language: "cs",    
                         theme: "modern",                        
-                        selector: "textarea",
+                        selector: "#frm-addArticle-text",
                         plugins: [
                                 "advlist autolink lists link image charmap print preview hr anchor pagebreak",
                                 "searchreplace wordcount visualblocks visualchars code fullscreen",

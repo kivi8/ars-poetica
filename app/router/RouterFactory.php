@@ -5,24 +5,28 @@ namespace App;
 use Nette,
 	Nette\Application\Routers\RouteList,
 	Nette\Application\Routers\Route,
-	Nette\Application\Routers\SimpleRouter;
+	Nette\Application\Routers\SimpleRouter,
+        App\Model\ArticleManager;
 
 
 /**
  * Router factory.
  */
 class RouterFactory
-{
-
+{      
+    private static $articleManager;
+    
 	/**
 	 * @return \Nette\Application\IRouter
 	 */
-	public static function createRouter(){
-	
+	public static function createRouter(ArticleManager $articleManager){
+
+            self::$articleManager = $articleManager;
+            
             $presenterTranslator = [
                 'domovska-stranka' => 'Homepage',
                 'uzivatel' => 'Log',
-                'clanek' => 'Article',
+                'clanky' => 'Article',
                 'poslat-clanek' => 'SendArticle',
                 'nastaveni' => 'Setting',
                 'zpravy' => 'Message',
@@ -46,6 +50,15 @@ class RouterFactory
             ];
             
 		$router = new RouteList();
+                
+                $pageRouter = new PageRoute('<url>', array(
+                    'presenter' => 'Article',
+                    'action' => 'article'
+                ));  
+                
+                $pageRouter->setArticleManager(self::$articleManager);        
+                        
+                $router[] = $pageRouter;        
                 
                 $router[] = new Route('hledat[/<search>]', [
                     'presenter' => 'Search',
@@ -81,10 +94,20 @@ class RouterFactory
                     ],
                     
                 ]);  
-                                                                                                                                         
+                
+                $router[] = new Route('clanky/<section>/<subsection>',[
+                    'presenter' => 'Article',
+                    'action' => 'default',
+                ]);
+                
+                $router[] = new Route('clanky/<section>',[
+                    'presenter' => 'Article',
+                    'action' => 'default',
+                ]);
+                
 		$router[] = new Route('<presenter>/<action>[/<id>]', [
                     'presenter' => [
-                        Route::VALUE => 'Homepage',
+                        Route::VALUE => 'Article',
                         Route::FILTER_STRICT => true,
                         Route::FILTER_TABLE => $presenterTranslator
                     ],
@@ -98,4 +121,30 @@ class RouterFactory
 		return $router;
 	}
 
+}
+
+class PageRoute extends Route{
+    
+    /** @var ArticleManager*/
+    private $articleManager;
+        
+    public function setArticleManager(ArticleManager $articleManager){
+
+        $this->articleManager = $articleManager;
+    }
+    
+    public function match(Nette\Http\IRequest $httpRequest) {
+        $appRequest = parent::match($httpRequest);
+        
+        if(empty($appRequest->parameters)){
+            return null;
+        }
+        
+        if(!$this->articleManager->getArticleUrl($appRequest->parameters['url'])){
+            return null;
+        }
+        
+        return $appRequest;
+    }
+    
 }

@@ -73,6 +73,11 @@ class ArticleForm {
         $valuesForm = $form->getValues(true);
         $valuesHttp = $form->getHttpData();
         
+        if(!$valuesForm['photo']->isImage() && $valuesForm['photo']->isOK()){
+                $form->addError('Toto není obrázek');
+                return ;
+        }
+        
         $valuesForm['underSubSection'] = (int) $valuesHttp['underSubSection'];
         $valuesForm['underSerial'] = (int) $valuesHttp['underSerial'];
         
@@ -89,6 +94,9 @@ class ArticleForm {
                 ->setRequired('Zadejte titulek')
                 ->setAttribute('placeholder', 'Zadejte titulek');
         
+        $form->addTextArea('description', 'Popis')
+                ->setRequired('Zadejte popis');
+        
         $form->addTextArea('text', 'Článek')
                 ->setRequired('Zadejte článek');
         
@@ -97,6 +105,9 @@ class ArticleForm {
         $form->addCheckbox('commentsAllow', 'Povolit komentáře');
         
         $form->addCheckbox('voteAllow', 'Povolit hlasování');
+        
+        $form->addUpload('photo', 'Fotka')                
+                    ->addRule($form::MAX_FILE_SIZE, 'Maximální velikost fotky je 10MB', 80000000);
         
         $form->addSelect('underSection', 'Hlavní sekce', $this->articleManager->getMainSectionList())
                 ->setPrompt('Vyberte hlavní sekci');

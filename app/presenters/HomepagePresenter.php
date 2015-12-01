@@ -3,7 +3,9 @@
 namespace App\Presenters;
 
 use Nette,
-	App\Model;
+        App\Model\ArticleManager,
+        App\Model\CaptchaManager,
+        App\Forms\SendArticle;
 
 
 /**
@@ -12,12 +14,29 @@ use Nette,
 class HomepagePresenter extends BasePresenter
 {   
     
-    public function renderDefault(){
-        $get = $this->getRequest()->parameters;
-            
-        if(isset($get['log']) && $get['log'] == 'in' && !$this->session->started){
-                
-            $this->template->customFlashMessage = 'Nemáte zapnuté soubory cookies, pro přihlášení musí být povoleny.';
-        }        
+    /** @var ArticleManager @inject */
+    public $articleManager;
+    
+    /** @var CaptchaManager @inject*/
+    public $captchaManager;  
+    
+    
+    public function actionDefault(){
+         
+        $this->redirect('Article:default');
+    }
+    
+    public function createComponentNewWriterForm() {
+        return (new SendArticle)->create($this->articleManager, $this->captchaManager, $this);
+    }
+    
+    /**
+     * New captcha picture
+     */
+    public function handleNewCaptcha(){
+        
+        $this->captchaManager->setNewQuestion();
+        
+        $this->redrawAjax('captcha');
     }
 }

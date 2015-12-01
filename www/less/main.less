@@ -4,14 +4,27 @@
 @red: #ED1C24;
 @grey: #7B7979;
 
+label{
+    font-style: normal;
+    font-weight: normal;
+}
+
 .required{
-    font-weight: bold;
+    
+    label{
+        font-weight: bold;
+    }
 }
 
 .nav-main{
     margin: 0 120px 0 0;
     font-size: 22px;
     font-weight: bold;
+}
+
+.active-top-menu{
+    
+    border-bottom: 1px solid @black;
 }
 
 .navbar-secondary{
@@ -54,6 +67,155 @@
     background-image: url('/images/logo-main.jpg');
 
     background-repeat: no-repeat;
-    background-position: 80% 0;
+    background-position: 69% 0;
    
+}
+
+.inline{
+    display: inline;
+}
+
+.searchForm{
+    width: 200px;
+    height: 25px;
+    background: transparent;   
+        
+    input{
+        margin: 0;
+        appearance: none;
+        box-shadow: none;
+        border-radius: none;
+        border: none;
+        height: 20px;
+        padding: 0;
+        
+        border-bottom: 2px solid @black;
+        margin-bottom: 15px;
+        background-color: transparent;
+        background-repeat:no-repeat;
+        overflow: hidden;
+        outline:none;
+    }
+    
+    input[type="text"]{
+        
+        float: left;
+        width: 165px;
+        height: 34px;
+        padding: 1px 2px;
+        
+    }
+    
+    input[type="submit"]{
+        
+        float: left;
+        width: 34px;
+        height: 34px;
+        font-family: FontAwesome;
+        font-size: 2em;        
+        
+        
+        &:hover{
+            font-size: 2.2em;
+        }
+    }
+    
+    
+}
+
+.newsAdd{
+    
+    border-top: 2px solid @grey;
+    border-bottom: 2px solid @grey;
+    padding: 5px;
+    text-align: center;
+    form{
+        input{
+            max-width: 120px;
+        }
+        textarea{
+            max-width: 120px;
+        }
+    }
+}
+
+.news{
+    
+    .borderLR();
+    
+    padding-left: 10px;
+    
+    margin-bottom: 20px;
+    
+    span{
+        font-weight: 600;
+    }
+    
+    div{
+        font-size: 12px;
+        a{
+            font-size: 9px;
+        }
+    }
+}
+
+.section{
+    
+    padding: 5px;
+    .borderLR();
+    border-top: @grey 2px solid;
+    margin: 60px 50px 60px 50px;
+    
+    span{
+        font-weight: 600;
+    }
+    
+    .subsection{
+        padding: 5px;
+        .borderLR();
+        border-top: @grey 2px solid;
+        margin: 10px 50px 10px 50px;
+    }
+}
+
+.arrow {
+    
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.borderLR(@color: @grey, @size: 2px){
+    
+    border-left: @color @size solid;
+    border-right: @color @size solid;
+}
+
+.article-main{
+    width: 350px;
+    margin: 20px 20px 20px 20px;
+    
+    
+    
+    image{
+       width: 350px;
+       height: 150px;
+    }
+    
+    .article-title{
+        font-size: 20px;
+        font-weight: bold;
+    }
+    
+    .article-info{
+        color: @red;
+        text-align: right;
+        
+        .name{
+            float: left;
+        }
+    }
+    .article-read{
+        float: right;
+    }
 }

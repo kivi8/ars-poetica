@@ -42,6 +42,11 @@ class ArticlePresenter extends BasePresenter{
     
     public function addSectionSucceeded(Form $form, $values){
         
+        if(!$values->photo->isImage() && $values->photo->isOK()){
+                $form->addError('Toto není obrázek');
+                return ;
+        }
+        
         $this->articleManager->addSection($values);
         $this->flashMessage('Přidáno');
         
