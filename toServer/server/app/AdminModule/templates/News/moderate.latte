@@ -1,9 +1,0 @@
-{block title}Upravit: {$news->title}{/block}
-
-{block content}
-
-Napsal: {\App\Helper\Helper::combineUserName($news->ref('user'))}
-
-Datum: {$news->date|date:'%d.%m.%Y %H:%M'}
-
-{control editNewsForm}

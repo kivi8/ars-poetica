@@ -1,9 +1,0 @@
-parameters:
-
-
-database:
-	dsn: 'mysql:host=127.0.0.1;dbname=c12arspoetica'
-	user: c12krystof
-	password: heslojevesloK8
-	options:
-		lazy: yes
