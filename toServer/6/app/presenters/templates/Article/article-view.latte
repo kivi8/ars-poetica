@@ -1,0 +1,26 @@
+<div class="article-main col-md-6">
+        
+        <a n:href="Article:article, $article->url"><img src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}" alt="Obrázek k článku"></a>
+        
+        <div class="article-info">
+            {if $article->byUnregUser}
+                <span class="name">{$article->byUnregUser}</span>           
+            {else}
+                {if $article->byUser}   
+                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($article->ref('byUser'), false)}</a> 
+                {else}
+                    <span class="name">Neregistrovany</span>
+                {/if}               
+            {/if}
+            {$article->date|timeInterval} do 
+            {if $article->underSection}
+                <a n:href="Article:default, $article->ref('underSection')->url">{$article->ref('underSection')->name}</a>
+            {/if}
+        
+            {if $article->underSubSection}\ <a n:href="Article:default, $article->ref('underSubSection')->url, $article->ref('underSubSection')->url">{$article->ref('underSubSection')->name}</a>{/if}
+        </div>
+        
+        <a n:href="Article:article, $article->url"><div class="article-title">{$article->title}</div></a>
+        <div class="article-desc">{$article->description}</div>
+        <a class="article-read" n:href="Article:article, $article->url">Číst celý článek</a>
+</div> 

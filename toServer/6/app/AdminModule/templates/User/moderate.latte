@@ -1,0 +1,14 @@
+{block title}Uživatel {$combinatedName}{/block}
+
+{block content}
+
+{control moderateUserForm}
+<a n:href="User:default">Zpět</a>
+
+{block script}
+<script>
+    $("Form input[type=checkbox]").click(function(){
+       var name = $(this).attr("name");
+    });
+</script>    
+{/block}

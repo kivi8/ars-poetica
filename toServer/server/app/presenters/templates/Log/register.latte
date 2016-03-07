@@ -1,0 +1,48 @@
+{define title}Registrace{/define}
+
+{block content}
+
+{snippet captcha}
+{form registerForm}
+    
+    <ul class="errors" n:if="$form->hasErrors()">
+        <li n:foreach="$form->errors as $error">{$error}</li>
+    </ul>
+    
+    <table>
+    <tr class="required">
+        <th>{label mail /}</th>       
+        <td>{input mail}</td>   
+    </tr> 
+    
+    <tr class="required">
+        <th>{label password /}</th>       
+        <td>{input password}</td>   
+    </tr> 
+    
+    <tr class="required">
+        <th>{label passwordVerify /}</th>       
+        <td>{input passwordVerify}</td>   
+    </tr> 
+    
+    <tr>
+        <th>{label nickName /}</th>     
+        <td>{input nickName}</td>   
+    </tr>      
+    </table>
+    
+    <p>Pokud chcete, můžete pro jednodušší přihlašování zadat jméno</p>
+    
+    <div class="captcha">
+        <img src="/captcha?t={rand(0,10000)}" src="captcha image" />
+        <a class="ajax" n:href="NewCaptcha!">Nová otázka</a>
+        <div>
+            {input captcha}
+        </div>
+    </div>    
+     
+    {input submit, class=>bigSubmit}
+{/form} 
+{/snippet captcha}
+
+<a n:href="Log:lostPass">Ztracené heslo</a>

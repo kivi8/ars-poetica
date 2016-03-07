@@ -5,9 +5,14 @@
             <property name="less.mappings" value="/less:/css"/>
             <property name="less.enabled" value="true"/>
             <property name="less.configured" value="true"/>
+            <property name="sass.configured" value="true"/>
+            <property name="sass.enabled" value="true"/>
+            <property name="sass.mappings" value="/scss:/css"/>
         </module>
         <module name="org-netbeans-modules-editor-indent">
             <node name="CodeStyle"/>
         </module>
+        <module name="org-netbeans-modules-javascript2-requirejs"/>
+        <module name="org-netbeans-modules-html-editor-lib"/>
     </preferences>
 </auxiliary-configuration>

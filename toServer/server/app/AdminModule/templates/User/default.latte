@@ -1,0 +1,61 @@
+{block title}Seznam uživatelů{/block}
+
+{block content}
+
+{snippet users}
+   <table class="table table-hover">           
+        <thead>
+            <tr>
+                <td>Jméno</td>
+                <td></td>
+            </tr> 
+        </thead>  
+  <tbody>      
+      <tr n:foreach="$userList['allowed'] as $id=>$name">
+          
+          <td>
+              {if $user->isAllowed('User', 'moderate')}
+                <a n:href="User:moderate $id">{$name}</a>
+              {else}
+                  {$name}
+              {/if}
+          </td>
+          
+          <td  n:if="$user->isAllowed('User', 'prohibit')">
+              <a class="ajax" n:href="prohibitUser! $id, true">Zablokovat</a>
+          </td>
+      </tr> 
+    </tbody>  
+   </table>
+              
+   <h2>Blokovaní uživatelé</h2>
+   
+   <table class="table table-hover"> 
+       <thead>
+        <tr>
+          <td>Jméno</td>
+          <td></td>
+        </tr>   
+       </thead> 
+       <tbody>
+      <tr n:foreach="$userList['deleted'] as $id=>$name">
+        <td>
+          {if $user->isAllowed('User', 'moderate')}
+                <a n:href="User:moderate $id">{$name}</a>
+              {else}
+                {$name}
+          {/if}
+        </td>
+          <td  n:if="$user->isAllowed('User', 'prohibit')">
+              <a class="ajax" n:href="prohibitUser! $id, false">Povolit</a>
+          </td>
+      </tr> 
+      </tbody>
+   </table>  
+{/snippet}               
+
+<h2>Přidat uživatele</h2>
+
+{if $user->isAllowed('User','add') && isset($userList)}
+    {control addUserForm}
+{/if}

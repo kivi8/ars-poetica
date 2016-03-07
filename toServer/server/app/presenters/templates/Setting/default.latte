@@ -1,0 +1,55 @@
+{define title}Nastavení{/define}
+
+{block content}
+
+<p>
+{if $user->getIdentity()->photo}    
+    <a class="photo" href="{$basePath}/user-photo/{$path['basename']}">
+        <img src="{$basePath}/user-photo/{$path['filename']}-min.{$path['extension']}" />   
+    </a>
+    
+    <div><a class="import-act" n:href="delFoto!">Smazat fotku</a></div>
+{/if}
+{var $usDat = $user->getIdentity()}
+
+<br />
+E-Mail: {$usDat->mail} <a n:href="Setting:changeMail">Změnit</a>
+<br />
+Jméno: {App\Helper\Helper::combineUserName($usDat->data)}
+<br />
+Registrován: {$usDat->registerTime|date:'%d.%m.%Y %H:%M'}
+<br />
+{if $usDat->title}Přidělený titul: {$usDat->title}{/if}
+</p>
+
+{control updateUserFrom}
+<br>
+{control changePassword}
+
+{define #script}
+<script>        
+    function check(){
+        var month = $('#frm-updateUserFrom-month').val();
+        var day = $('#frm-updateUserFrom-day').val();
+               
+        if(month === '00' || day === '00'){
+            return true;
+        }        
+        if(month === '02' && day > 29 ){
+            $('#frm-updateUserFrom-day').val('29');
+            alert('Takové datum neexistuje');
+        }        
+        if(month % 2 == 0 && day > 30){
+            $('#frm-updateUserFrom-day').val('30');
+            alert('Takové datum neexistuje');
+        }
+    }   
+    $('#frm-updateUserFrom-day').change(function(){
+        check();
+    });
+    
+    $('#frm-updateUserFrom-month').change(function(){
+        check();
+    });
+</script>
+{/define}

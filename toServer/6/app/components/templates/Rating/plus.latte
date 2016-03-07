@@ -1,0 +1,26 @@
+<span n:snippet="flashMessageRating">
+        <span n:foreach="$flashes as $flash" class="alert alert-success alert-float" id="alert">{$flash->message}</span>
+        <script>$("#alert").delay(2000).fadeOut(500);</script>
+</span>
+
+<span n:snippet="rating">
+
+    <span class="votecomment" n:if="!$onlyShow">
+        Hlasovat: 
+        <a n:href="rate!, 1" class="ajax {if $userVote == 1}active{/if}">+</a>
+        <a n:href="rate!, -1" class="ajax {if $userVote == -1}active{/if}">-</a>
+        
+        <span n:if="$userVote !== false" class="votecomment"><a n:href="del!" class="ajax">Odebrat hlas</a></span>  
+
+    </span> 
+
+    <span class="commentvotes">
+        {if $sum || is_numeric($sum)}
+            {$sum}
+        {else}    
+            Zatím nehodnoceno
+        {/if}    
+    </span>
+</span>
+
+        
