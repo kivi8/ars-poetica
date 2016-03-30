@@ -62,6 +62,15 @@
     </head>
     <body>               
         
+        <div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/cs_CZ/sdk.js#xfbml=1&version=v2.5&appId=1252758588086042";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+        
         <div class="container">
             
             <header class="col-md-12 logo-main"> 
@@ -93,8 +102,8 @@
                         </a>
                     </li>
                     <li>
-                        <a n:href=":Homepage:diskuze">
-                           <div n:class="$presenter->isLinkCurrent('Homepage:diskuze')?active-top-menu">Diskuze <i class="fa fa-comments-o fa-lg"></i></div>
+                        <a href="/forum">
+                           <div>Diskuze <i class="fa fa-comments-o fa-lg"></i></div>
                         </a>
                     </li>
                     <li>
@@ -219,7 +228,19 @@
                 <a n:href=":SendArticle:">Poslat do redakce</a>
                 
                 <hr>
-                   
+                
+                <div class="fb-page" data-href="https://www.facebook.com/arspoetica.net/" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                    <div class="fb-xfbml-parse-ignore">
+                        <blockquote cite="https://www.facebook.com/arspoetica.net/">
+                            <a href="https://www.facebook.com/arspoetica.net/">Ars poetica</a>                     
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <a class="twitter-timeline"  href="https://twitter.com/Arspoeticatw" data-widget-id="714855520239292416">Tweety</a>
+                <script>!function(d,s,id){l}var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){l}js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+          
+                
                 {control news}
                                
             </aside>

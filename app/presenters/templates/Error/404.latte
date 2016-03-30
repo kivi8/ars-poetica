@@ -1,8 +1,12 @@
+{define title}Stránka nenalezena{/define}
 {block content}
-<h1 n:block=title>Page Not Found</h1>
 
-<p>The page you requested could not be found. It is possible that the address is
-incorrect, or that the page no longer exists. Please use a search engine to find
-what you are looking for.</p>
+<p>Stránka, na kterou se snažíte vstoupit nebyla nalezena.
+    Je možné, že máte špatnou adresu, nebo stránka už neexistuje.
+    Můžete použít vyhledávač.</p>
 
 <p><small>error 404</small></p>
+
+<div class="col-md-9 center-block">
+    <img src="{$basePath}/images/error.jpg" alt="error" class="error-pic">
+</div>    

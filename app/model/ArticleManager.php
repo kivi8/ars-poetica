@@ -233,7 +233,9 @@ class ArticleManager extends Manager{
     
     public function getArticleByUser($user){
         
-        return $this->articleDat()->where('byUser', $user)->fetchAll();       
+        return $this->articleDat()->where('byUser', $user)
+                ->order('date DESC')
+                ->fetchAll();       
     }
     
     public function viewForArticleUrl($url, Nette\Http\Session $session){

@@ -1,0 +1,22 @@
+Ahoj {TO_USERNAME},
+
+Následující email vám byl poslán přes formulář pro kontaktování administrátora na fóru "{SITENAME}".
+
+<!-- IF S_IS_REGISTERED -->
+Zpráva byla odeslaná uživatelem, který má na fóru účet:
+Uživatelské jméno: {FROM_USERNAME}
+Emailová adresa: {FROM_EMAIL_ADDRESS}
+IP adresa: {FROM_IP_ADDRESS}
+Profil: {U_FROM_PROFILE}
+<!-- ELSE -->
+Zpráva byla odeslaná hostem s těmito kontaktními informacemi:
+Jméno: {FROM_USERNAME}
+Emailová adresa: {FROM_EMAIL_ADDRESS}
+IP adresa: {FROM_IP_ADDRESS}
+<!-- ENDIF -->
+
+
+Vlastní zpráva následuje
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{MESSAGE}

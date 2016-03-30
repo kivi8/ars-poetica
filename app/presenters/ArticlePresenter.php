@@ -103,7 +103,11 @@ class ArticlePresenter extends BasePresenter{
     
     public function renderArticle($url){
  
-        $this->articleManager->viewForArticleUrl($url, $this->getSession());
+        if(!\App\Helper\Helper::isIndexBot()){
+            $this->articleManager->viewForArticleUrl($url, $this->getSession());
+        }
+        
+        
         
         $this->template->article = $this->articleDat;
     }

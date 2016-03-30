@@ -70,21 +70,25 @@ class CommentsControl extends Control{
 
     }    
     
+    private function setPage($page = 1, $new = false){
+        
+        if($new){
+            $this->paginator->itemCount++;
+        }
+        
+        $this->paginator->setPage($page);
+        $this->page = $page;
+        $this->template->lastPage = $this->lastPage;
+        $this->template->comments = $this->commentsManager->getComments($this->paginator);
+    }
     
     public function render(){
         
-        $template = $this->template;
+        $this->template->setFile(__DIR__.'/templates/Comments/comments.latte');
         
-        $template->setFile(__DIR__.'/templates/Comments/comments.latte');
+        $this->template->_form = $this['addComment'];
         
-        $template->_form = $this['addComment'];
-        
-        $this->paginator->setPage($this->page);
-        
-        $template->comments = $this->commentsManager->getComments($this->paginator);
-        
-        $template->lastPage = $this->lastPage;
-        
+        $this->setPage($this->page);     
         
         $this->template->render();
     }
@@ -150,7 +154,7 @@ class CommentsControl extends Control{
             $this->commentsManager->addComment($values, $under);
             
             if($under === false){
-                $this->page = 1;  
+                $this->setPage(1, true); 
                 $this->flashMessage('Přidán komentář'); 
                 $this->redrawAjax('commentContainerAll');
             }           
@@ -187,7 +191,7 @@ class CommentsControl extends Control{
      * @param array array $snippet
      * @param string $way
      */
-    protected function redrawAjax($snippet, $way = 'this'){
+    private function redrawAjax($snippet, $way = 'this'){
         
         if($this->presenter->isAjax()){
                 
@@ -205,12 +209,13 @@ class CommentsControl extends Control{
     }  
     
     public function handlePage($page){
+        
         if(is_numeric($page) && $page <= $this->lastPage && $page>0){
-            $this->page = $page;
+            $this->setPage($page);
             
         }       
         else{
-            $this->page = 1;
+            $this->setPage(1);
         }
         $this->redrawAjax('commentContainerAll');
     }

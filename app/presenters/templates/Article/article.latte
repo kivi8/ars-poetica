@@ -44,7 +44,7 @@
                 <span class="name">{$article->byUnregUser}</span>
             {else}
                 {if $article->byUser}
-                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($user, false)}</a> 
+                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($usera, false)}</a> 
                 {else}
                     <span class="name">Neregistrovaný</span>
                 {/if}    

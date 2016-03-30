@@ -41,4 +41,28 @@ $(document).ready(function() {
   
 });
 
+function slideSwitch() {
+    var $active = $('#slideshow a.active-s');
 
+    if ( $active.length == 0 ){
+        $active = $('#slideshow a:last');
+    }
+
+    var $next =  $active.next().length ? $active.next(): $('#slideshow a:first');
+
+
+
+    $active.addClass('last-active');
+
+
+    $next.children().css({opacity: 0.0});
+    $next.addClass('active-s');
+
+    $next.children().animate({opacity: 1.0}, 1000, function() {
+            $active.removeClass('active-s last-active');
+        });
+}
+
+$(function() {
+    setInterval( "slideSwitch()", 5000 );
+});

@@ -80,6 +80,10 @@ class RatingControl extends Control{
         if(!$points || !is_numeric($points) || $points > $this->points || $points < $this->from ){
             throw new Nette\Application\BadRequestException;
         }
+        
+        if(\App\Helper\Helper::isIndexBot()){
+            return;
+        }
                 
         if($this->ratingManager->addVote($points)){
             $this->redrawAjax('Hodnocení přidáno');
