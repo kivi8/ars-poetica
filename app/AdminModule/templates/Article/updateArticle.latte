@@ -97,16 +97,9 @@
     
     {snippet underSection}
     
-    {if $values->underSection}{$values->ref('underSection')->name}{/if}
-    {input underSection}
-    
-    <div>
-        <h4 class="arrowText">Přidat sekci <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
-        <div class="hide-box">
-            <input type="text" name="addSection">
-            <span class="btn btn-default" id="addNewAjaxSection">Přidat</span>
-        </div>
-    </div>
+	{if $values->underSection}{$values->ref('underSection')->name}{/if}
+	{input underSection}
+        
     {/snippet}      
     
     {snippet underSubSectionSnippet}  
@@ -116,13 +109,6 @@
         {if $values->underSubSection}{$values->ref('underSubSection')->name}{/if}
         {input underSubSection}
                
-        <div>
-        <h4 class="arrowText">Přidat podsekci pod: <span id = "subSection"></span> <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
-        <div class="hide-box">
-            <input type="text" name="addSection">
-            <span class="btn btn-default" id="addNewAjaxSubSection">Přidat</span>
-        </div>
-        </div>
     
         {snippet underSerialSnippet}
             
@@ -131,20 +117,19 @@
             {if $values->underSerial}{$values->ref('underSerial')->name}{/if}
             {input underSerial}
         
-            <div>
-                <h4 class="arrowText">Přidat serial pod: <span id = "serial"></span> <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
-                               
-                <div class="hide-box">
-                    <input type="text" name="addSection">
-                    <span class="btn btn-default" id="addNewAjaxSerial">Přidat</span>
-                </div>
-            </div>
+    <div id="addSerial">
+        <h4 class="arrowText">Vytvořit seriál <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
+        <div class="hide-box">
+            <input type="text" name="addSerial">
+            <span class="btn btn-default" id="addNewAjaxSerial">Přidat</span>
+        </div>
+    </div>
         {/snippet}      
         
         
         <script>
     
-            $('#frm-updateArticle-underSection').on('change', function() {
+            $('#frm-updateArticle-underSection').on('change', function() {	
                 $.nette.ajax({
                     type: 'GET',
                     url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=underSectionChange',
@@ -155,6 +140,7 @@
             });
 
             $('#frm-updateArticle-underSubSection').on('change', function() {
+	    
                 $.nette.ajax({
                     type: 'GET',
                     url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=subSectionChange',
@@ -165,29 +151,19 @@
             });   
 </script>
         
-    {/snippet}             
+    {/snippet}    
+    {snippet jsUpdate}
     <script>
-        $('#addNewAjaxSection').on('click', function() {
-            $.nette.ajax({
-                type: 'GET',
-                url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=addNewAjaxSection',
-                data: {
-                    'name': $(this).prev('input:text').val()
-                }                   
-            });
-        });
-        
-        $('#addNewAjaxSubSection').on('click',function() {
-            $.nette.ajax({
-                type: 'GET',
-                url: '/administrace/clanky/upravit-clanek?id={$values->id}&do=addNewAjaxSection',
-                data: {
-                    'name': $(this).prev('input:text').val(),
-                    'underSection': $('#frm-updateArticle-underSection').val()
-                }                   
-            });
-        });
-        
+    
+    var subSection = $('#frm-updateArticle-underSubSection').val();
+    var section = $('#frm-updateArticle-underSection').val();   
+    $("#addSerial").css("display", "none");
+    if(subSection && subSection != '0' && section && section != '0'){
+	$("#addSerial").css("display", "block");
+    }
+    
+	
+    
         $('#addNewAjaxSerial').on('click',function() {
             $.nette.ajax({
                 type: 'GET',
@@ -200,7 +176,24 @@
             });
         });
         
-    </script>    
+	$('.hide-box').css('display','none');
+    
+                $('.arrowText').on('click',function (){
+                    var txt = $(this).next('.hide-box'); 
+                    if(txt.css('display') === 'none'){
+                        txt.show(200);
+                        $(this).children('.arrow').css('transform', 'rotate(-180deg)');
+                    }
+                    else{
+                        txt.hide(100);
+                        $(this).children('.arrow').css('transform', 'rotate(0deg)');
+                    }
+                }); 
+	
+    </script>  
+    
+    
+    {/snippet}
     
             {input submitArticle}
 {/form}    
@@ -223,7 +216,7 @@
                                  ],
                         toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image jbimages | forecolor backcolor emoticons",
                 });
+				
     </script>
+    
 {/define}
-
-{define hide}{/define}

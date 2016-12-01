@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\ApplicationLatte;
@@ -27,7 +27,7 @@ class UIRuntime extends Nette\Object
 				if ($name[0] !== '_' || !$control->isControlInvalid((string) substr($name, 1))) {
 					continue;
 				}
-				ob_start();
+				ob_start(function () {});
 				$function = reset($function);
 				$snippets = $function($local, $params + array('_snippetMode' => TRUE));
 				$payload->snippets[$id = $control->getSnippetId((string) substr($name, 1))] = ob_get_clean();

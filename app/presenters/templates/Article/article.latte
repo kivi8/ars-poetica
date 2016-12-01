@@ -35,6 +35,16 @@
     {$article->text |noescape}
 </section>
 
+<div id="serial" class="serial" n:if="!empty($serials)">
+    <h4>Seriál: {$serial->name}</h4>
+    {$serial->description}
+    <ol>
+	<li n:foreach="$articleInSerial as $articleS">
+	    <a n:href="Article:article, $articleS->url">{$articleS->title}</a>
+	</li>
+    </ol>
+</div>    
+
 <div class="user-description">
     
     {var $usera = $article->ref('byUser')}
@@ -72,7 +82,7 @@
       <a n:href="Article:default, $article->ref('underSection')->url">{$article->ref('underSection')->name}</a>     
   </li>
   <li n:if="!empty($article->underSubSection)">
-      <a n:href="Article:default, $article->ref('underSubSection')->url">{$article->ref('underSubSection')->name}</a>     
+      <a n:href="Article:default, $article->ref('underSection')->url, $article->ref('underSubSection')->url">{$article->ref('underSubSection')->name}</a>     
   </li>
   <li class="active">
       {$article->title}

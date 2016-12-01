@@ -2,10 +2,12 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester\Runner;
+
+use Tester\Helpers;
 
 
 /**
@@ -28,11 +30,14 @@ class ZendPhpInterpreter implements PhpInterpreter
 	/** @var bool */
 	private $xdebug;
 
+	/** @var string */
+	private $error;
+
 
 	public function __construct($path, $args = NULL)
 	{
-		$this->path = \Tester\Helpers::escapeArg($path);
-		$proc = @proc_open(
+		$this->path = Helpers::escapeArg($path);
+		$proc = proc_open(
 			"$this->path -n $args -v", // -v must be the last
 			array(array('pipe', 'r'), array('pipe', 'w'), array('pipe', 'w')),
 			$pipes,
@@ -41,9 +46,9 @@ class ZendPhpInterpreter implements PhpInterpreter
 			array('bypass_shell' => TRUE)
 		);
 		$output = stream_get_contents($pipes[1]);
-		$error = stream_get_contents($pipes[2]);
+		$this->error = trim(stream_get_contents($pipes[2]));
 		if (proc_close($proc)) {
-			throw new \Exception("Unable to run '$path': " . preg_replace('#[\r\n ]+#', ' ', $error));
+			throw new \Exception("Unable to run '$path': " . preg_replace('#[\r\n ]+#', ' ', $this->error));
 		} elseif (!preg_match('#^PHP (\S+).*c(g|l)i#i', $output, $matches)) {
 			throw new \Exception("Unable to detect PHP version (output: $output).");
 		}
@@ -91,6 +96,15 @@ class ZendPhpInterpreter implements PhpInterpreter
 	public function isCgi()
 	{
 		return $this->cgi;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getErrorOutput()
+	{
+		return $this->error;
 	}
 
 }

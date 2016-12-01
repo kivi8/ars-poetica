@@ -7,7 +7,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         
-        <title>{ifset title}{include title|striptags} | {/ifset}Ars poetica</title>
+        <title>{ifset title}{include title|striptags} | {/ifset}Ars poetica - zájmový on-line magazín</title>
         
         <meta n:ifset="description" name="description" content="{include description|striptags, strip}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -45,7 +45,7 @@
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
             (function() {
-                var u="//piwik.arspoetica.net/";
+                var u="//piwik.trko.eu/";
                 _paq.push(['setTrackerUrl', u+'piwik.php']);
                 _paq.push(['setSiteId', 1]);
                 var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -236,13 +236,19 @@
                         </blockquote>
                     </div>
                 </div>
-                
+                <!--
                 <a class="twitter-timeline"  href="https://twitter.com/Arspoeticatw" data-widget-id="714855520239292416">Tweety</a>
                 <script>!function(d,s,id){l}var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){l}js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-          
-                
+                -->
+                {if $presenter->isLinkCurrent('Article:default')}
+                <hr>
+                <script src="https://snapwidget.com/js/snapwidget.js"></script>
+                <iframe src="https://snapwidget.com/embed/code/163494" class="snapwidget-widget" allowTransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:100%; "></iframe>
+                <hr>
+                {/if}
+		
                 {control news}
-                               
+                                             
             </aside>
                            
             

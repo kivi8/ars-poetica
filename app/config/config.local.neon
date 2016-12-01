@@ -2,8 +2,8 @@ parameters:
 
 
 database:
-	dsn: 'mysql:host=127.0.0.1;dbname=ars-poetica'
-	user: user
-	password: password
+	dsn: 'mysql:host=localhost;dbname=c12arspoetica_dev'
+	user: c12krystof
+	password: heslojevesloK8
 	options:
 		lazy: yes

@@ -13,7 +13,11 @@
 {/if}
 
 {if $user->isAllowed('Section', 'moderate') || $user->isAllowed('Article', 'moderate') || $user->isAllowed('Article', 'add')}
-    <h3><a n:href="Article:">Články, sekce</a></h3>
+    <h3><a n:href="Article:">Články, sekce, seriály</a></h3>
+{/if}
+
+{if $user->isAllowed('Article', 'moderate') || $user->isAllowed('Article', 'moderate') || $user->isAllowed('Article', 'add')}
+    <h3><a n:href="Text:">Texty na stránce</a></h3>
 {/if}
 
 <h3>Připomínky a texty</h3>
@@ -29,7 +33,6 @@
     <div>{$writer->date|timeInterval}</div>
     <div n:if="$writer->byUser">Autor: <a n:href=":User:Detail, $writer->byUser">{\App\Helper\Helper::combineUserName($writer->ref('byUser'))}</a></div>
     <div n:if="$writer->title"><h4>{$writer->title}</h4></div>
-    <div>{$writer->text|noescape}</div>
-    
+    <div>{$writer->text|noescape}</div>   
 </div>  
 {/snippet}

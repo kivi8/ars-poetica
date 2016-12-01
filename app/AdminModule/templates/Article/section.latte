@@ -1,32 +1,79 @@
-{block title}Sekce{/block}
+{block title}Sekce, podsekce, seriály{/block}
 
 {block content}
 
-<h2>Přidat sekci</h2>
-{control addSection}
-
 {snippet section}
-
-<div class="section" n:foreach="$section as $sec">
-    <p><span>Jméno: </span>{$sec->name}</p>
-    <p><span>Popis: </span>{$sec->description}</p>
+{foreach $section as $sec}
+<div class="section-adm {if $iterator->first}first-section{/if}">
+    <span class="big1-name">{$sec->name}</span> 
     
     {var dat = $sec->id.'a'.'0a'.$sec->itemOrder}
-    {control orderForm-$dat}
+    <span class="adm-section-right">
+	{form orderForm-$dat}{input order}{/form}
+	
+	<a class="small" n:href="Article:updateSection $sec->id">Upravit</a>
+	<a class="ajax small" n:href="delete! $sec->id, sec">Smazat</a>
+    </span>
     
-    <div class="subsection" n:foreach="$sec->related('subSection','underSection')->order('itemOrder') as $subSec">
-        <p><span>Jméno: </span>{$subSec->name}</p>
-        <p><span>Popis: </span>{$subSec->description}</p>
-        {var datS = $subSec->id.'a'.'1a'.$subSec->itemOrder}
-        {control orderForm-$datS}
-        <a n:href="Article:updateSection $subSec->id, sub">Upravit</a>
-        <a class="ajax" n:href="delete! $subSec->id, sub">Smazat</a>
+    <p>{$sec->description}</p>
+    {foreach $sec->related('subSection','underSection')->order('itemOrder') as $subSec}
+    <div class="subsection-adm {if $iterator->first}first-subsection{/if}">
+        <span class="big2-name">{$subSec->name}</span>
+        
+	<span class="adm-section-right">
+	    {var datS = $subSec->id.'a'.'1a'.$subSec->itemOrder}
+	    {form orderForm-$datS}{input order}{/form}
+	    <a class="small" n:href="Article:updateSection $subSec->id, sub">Upravit</a>
+	    <a class="ajax small" n:href="delete! $subSec->id, sub">Smazat</a>
+	</span>
+	    
+	<p>{$subSec->description}</p>
+	
+	
+	{foreach $subSec->related('serial','underSubSection') as $serial}
+	<div class="serial-adm {if $iterator->first}first-serial{/if}">
+	    <span class="big3-name">{$serial->name}</span>
+	    <span class="adm-section-right">
+		<a class="small" n:href="Article:updateSection $serial->id, ser">Upravit</a>
+		<a class="ajax small" n:href="delete! $serial->id, ser">Smazat</a>
+	    </span>
+	    <p>{$serial->description}</p>
+	
+	</div> 
+	{/foreach}
+	    
+	{var secSubsec = $sec->id.'a'.$subSec->id}
+	<div class="serial-form-adm serial-adm">		
+	    {form addSerial-$secSubsec}
+		{input name}
+		{input description}
+		{input submit}
+	    {/form}
+	</div>
+	
     </div>  
-        
-        <h3>Přidat podsekci</h3>
-        {control addSubSection-$sec->id}    
-        <a n:href="Article:updateSection $sec->id">Upravit</a>
-        <a class="ajax" n:href="delete! $sec->id, sectionDat">Smazat</a>
+{/foreach}
+  
+    <div class="subsection-form-adm add-subsection subsection-adm" style="border-top: none;">		
+	{form addSubSection-$sec->id}
+	    {input name}
+	    {input description}
+	    {input submit}
+	{/form}
+    </div>   
 </div>
+    {/foreach}
+    <div class="section-form-adm add-subsection section-adm" style="border-top: none;">		
+	{form addSection}
+	    {input name}
+	    {input description}
+	    {input submit}
+	{/form}
+    </div> 
         
+    <script>
+	$('.change-submit').change(function(){	    
+	    $(this).closest('form').submit();
+	});
+    </script>
 {/snippet}

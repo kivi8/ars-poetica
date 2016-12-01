@@ -1,6 +1,8 @@
 <div class="article-main col-md-6">
         
-        <a n:href="Article:article, $article->url"><img src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}" alt="Obrázek k článku"></a>
+        <a n:href="Article:article, $article->url">
+	    <img class="homepage-photos img-responsive" src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}" alt="Obrázek k článku">
+	</a>
         
         <div class="article-info">
             {if $article->byUnregUser}

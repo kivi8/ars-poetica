@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Application\Routers;
@@ -12,7 +12,6 @@ use Nette;
 
 /**
  * The router broker.
- * @property-read string $module
  */
 class RouteList extends Nette\Utils\ArrayList implements Nette\Application\IRouter
 {
@@ -56,22 +55,7 @@ class RouteList extends Nette\Utils\ArrayList implements Nette\Application\IRout
 	public function constructUrl(Nette\Application\Request $appRequest, Nette\Http\Url $refUrl)
 	{
 		if ($this->cachedRoutes === NULL) {
-			$routes = array();
-			$routes['*'] = array();
-
-			foreach ($this as $route) {
-				$presenters = $route instanceof Route && is_array($tmp = $route->getTargetPresenters())
-					? $tmp : array_keys($routes);
-
-				foreach ($presenters as $presenter) {
-					if (!isset($routes[$presenter])) {
-						$routes[$presenter] = $routes['*'];
-					}
-					$routes[$presenter][] = $route;
-				}
-			}
-
-			$this->cachedRoutes = $routes;
+			$this->warmupCache();
 		}
 
 		if ($this->module) {
@@ -96,6 +80,29 @@ class RouteList extends Nette\Utils\ArrayList implements Nette\Application\IRout
 		}
 
 		return NULL;
+	}
+
+
+	/** @internal */
+	public function warmupCache()
+	{
+		$routes = array();
+		$routes['*'] = array();
+
+		foreach ($this as $route) {
+			$presenters = $route instanceof Route && is_array($tmp = $route->getTargetPresenters())
+				? $tmp
+				: array_keys($routes);
+
+			foreach ($presenters as $presenter) {
+				if (!isset($routes[$presenter])) {
+					$routes[$presenter] = $routes['*'];
+				}
+				$routes[$presenter][] = $route;
+			}
+		}
+
+		$this->cachedRoutes = $routes;
 	}
 
 

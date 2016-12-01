@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Http;
 
-use Nette,
-	Nette\Utils\Strings;
+use Nette;
+use Nette\Utils\Strings;
 
 
 /**
  * Current HTTP request factory.
- *
- * @author     David Grudl
  */
 class RequestFactory extends Nette\Object
 {
@@ -201,12 +199,21 @@ class RequestFactory extends Nette\Object
 
 		// proxy
 		foreach ($this->proxies as $proxy) {
-			if (Helpers::ipMatch($remoteAddr, $proxy)) {
-				if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-					$remoteAddr = trim(current(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
-				}
-				if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-					$remoteHost = trim(current(explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'])));
+			if (Helpers::ipMatch($remoteAddr, $proxy) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+				$proxies = $this->proxies;
+				$xForwardedForWithoutProxies = array_filter(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']), function ($ip) use ($proxies) {
+					return !array_filter($proxies, function ($proxy) use ($ip) {
+						return Helpers::ipMatch(trim($ip), $proxy);
+					});
+				});
+				$remoteAddr = trim(end($xForwardedForWithoutProxies));
+
+				if (!empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+					$xForwardedForRealIpKey = key($xForwardedForWithoutProxies);
+					$xForwardedHost = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
+					if (isset($xForwardedHost[$xForwardedForRealIpKey])) {
+						$remoteHost = trim($xForwardedHost[$xForwardedForRealIpKey]);
+					}
 				}
 				break;
 			}
@@ -221,7 +228,7 @@ class RequestFactory extends Nette\Object
 		}
 
 		// raw body
-		$rawBodyCallback = function() {
+		$rawBodyCallback = function () {
 			static $rawBody;
 
 			if (PHP_VERSION_ID >= 50600) {

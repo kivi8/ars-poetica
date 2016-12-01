@@ -1,21 +1,19 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\DatabaseTracy;
 
-use Nette,
-	Nette\Database\Helpers,
-	Tracy;
+use Nette;
+use Nette\Database\Helpers;
+use Tracy;
 
 
 /**
  * Debug panel for Nette\Database.
- *
- * @author     David Grudl
  */
 class ConnectionPanel extends Nette\Object implements Tracy\IBarPanel
 {
@@ -102,7 +100,7 @@ class ConnectionPanel extends Nette\Object implements Tracy\IBarPanel
 		$name = $this->name;
 		$count = $this->count;
 		$totalTime = $this->totalTime;
-		ob_start();
+		ob_start(function () {});
 		require __DIR__ . '/templates/ConnectionPanel.tab.phtml';
 		return ob_get_clean();
 	}
@@ -126,13 +124,14 @@ class ConnectionPanel extends Nette\Object implements Tracy\IBarPanel
 				try {
 					$cmd = is_string($this->explain) ? $this->explain : 'EXPLAIN';
 					$explain = $connection->queryArgs("$cmd $sql", $params)->fetchAll();
-				} catch (\PDOException $e) {}
+				} catch (\PDOException $e) {
+				}
 			}
 			$query[] = $explain;
 			$queries[] = $query;
 		}
 
-		ob_start();
+		ob_start(function () {});
 		require __DIR__ . '/templates/ConnectionPanel.panel.phtml';
 		return ob_get_clean();
 	}

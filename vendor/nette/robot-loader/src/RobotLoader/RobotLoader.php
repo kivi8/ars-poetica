@@ -1,24 +1,19 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Loaders;
 
-use Nette,
-	Nette\Caching\Cache,
-	SplFileInfo;
+use Nette;
+use Nette\Caching\Cache;
+use SplFileInfo;
 
 
 /**
  * Nette auto loader is responsible for loading classes and interfaces.
- *
- * @author     David Grudl
- *
- * @property-read array $indexedClasses
- * @property   Nette\Caching\IStorage $cacheStorage
  */
 class RobotLoader extends Nette\Object
 {
@@ -52,7 +47,7 @@ class RobotLoader extends Nette\Object
 	public function __construct()
 	{
 		if (!extension_loaded('tokenizer')) {
-			throw new Nette\NotSupportedException("PHP extension Tokenizer is not loaded.");
+			throw new Nette\NotSupportedException('PHP extension Tokenizer is not loaded.');
 		}
 	}
 
@@ -106,7 +101,7 @@ class RobotLoader extends Nette\Object
 			if ($this->classes[$type]['orig'] !== $orig) {
 				trigger_error("Case mismatch on class name '$orig', correct name is '{$this->classes[$type]['orig']}'.", E_USER_WARNING);
 			}
-			call_user_func(function($file) { require $file; }, $this->classes[$type]['file']);
+			call_user_func(function ($file) { require $file; }, $this->classes[$type]['file']);
 		} else {
 			$this->missing[$type] = TRUE;
 		}
@@ -211,12 +206,12 @@ class RobotLoader extends Nette\Object
 		}
 
 		$iterator = Nette\Utils\Finder::findFiles(is_array($this->acceptFiles) ? $this->acceptFiles : preg_split('#[,\s]+#', $this->acceptFiles))
-			->filter(function(SplFileInfo $file) use (& $disallow) {
+			->filter(function (SplFileInfo $file) use (& $disallow) {
 				return !isset($disallow[$file->getPathname()]);
 			})
 			->from($dir)
 			->exclude($ignoreDirs)
-			->filter($filter = function(SplFileInfo $dir) use (& $disallow) {
+			->filter($filter = function (SplFileInfo $dir) use (& $disallow) {
 				$path = $dir->getPathname();
 				if (is_file("$path/netterobots.txt")) {
 					foreach (file("$path/netterobots.txt") as $s) {

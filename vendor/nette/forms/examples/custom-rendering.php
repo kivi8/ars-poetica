@@ -9,10 +9,10 @@ if (@!include __DIR__ . '/../vendor/autoload.php') {
 	die('Install packages using `composer install`');
 }
 
-use Nette\Forms\Form,
-	Tracy\Debugger,
-	Tracy\Dumper,
-	Nette\Utils\Html;
+use Nette\Forms\Form;
+use Tracy\Debugger;
+use Tracy\Dumper;
+use Nette\Utils\Html;
 
 Debugger::enable();
 
@@ -37,8 +37,8 @@ $form->addText('name', 'Your name')
 	->setRequired('Enter your name');
 
 $form->addRadioList('gender', 'Your gender', array(
-	'm' => Html::el('option', 'male')->style('color: #248bd3'),
-	'f' => Html::el('option', 'female')->style('color: #e948d4'),
+	'm' => Html::el('span', 'male')->style('color: #248bd3'),
+	'f' => Html::el('span', 'female')->style('color: #e948d4'),
 ));
 
 $form->addSelect('country', 'Country', array(
@@ -116,10 +116,10 @@ if ($form->isSuccess()) {
 		background: #EEE;
 	}
 </style>
-<script src="http://nette.github.io/resources/js/netteForms.js"></script>
+<script src="https://nette.github.io/resources/js/netteForms.js"></script>
 
 <h1>Nette Forms custom rendering example</h1>
 
 <?php echo $form ?>
 
-<footer><a href="http://doc.nette.org/en/forms">see documentation</a></footer>
+<footer><a href="https://doc.nette.org/en/forms">see documentation</a></footer>

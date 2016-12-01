@@ -21,6 +21,10 @@ class RouterFactory
 	 */
 	public static function createRouter(ArticleManager $articleManager){
 
+	    if(\Tracy\Debugger::$productionMode){
+		Route::$defaultFlags = Route::SECURED;
+	    }
+	    
             self::$articleManager = $articleManager;
             
             $presenterTranslator = [
@@ -50,7 +54,7 @@ class RouterFactory
             ];
             
 		$router = new RouteList();
-                
+			               
                 $pageRouter = new PageRoute('<url>', array(
                     'presenter' => 'Article',
                     'action' => 'article'
@@ -72,6 +76,7 @@ class RouterFactory
                     'rychle-zpravy'=>'News',
                     'komentare'=>'Comments',
                     'clanky'=>'Article',
+		    'texty'=>'Text'
                 ];
                 
                 $adminActionTranslator = [
@@ -80,7 +85,7 @@ class RouterFactory
                     'upravit-clanek'=>'updateArticle',
                     'pridat-clanek'=>'addArticle',
                     'upravit-sekci' => 'updateSection',
-                    'seznam-clanku' => 'articleList'
+                    'seznam-clanku' => 'articleList'		    
                 ];
                 
                 $adminRouter[] = new Route('administrace/<presenter>/<action>[/id]', [

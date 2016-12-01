@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Http;
@@ -12,16 +12,6 @@ use Nette;
 
 /**
  * Provides access to session sections as well as session settings and management methods.
- *
- * @author     David Grudl
- *
- * @property-read bool $started
- * @property-read string $id
- * @property   string $name
- * @property-read \ArrayIterator $iterator
- * @property   array $options
- * @property-write $savePath
- * @property-write ISessionStorage $storage
  */
 class Session extends Nette\Object
 {
@@ -225,9 +215,11 @@ class Session extends Nette\Object
 	{
 		if (self::$started && !$this->regenerated) {
 			if (headers_sent($file, $line)) {
-				throw new Nette\InvalidStateException("Cannot regenerate session ID after HTTP headers have been sent" . ($file ? " (output started at $file:$line)." : "."));
+				throw new Nette\InvalidStateException('Cannot regenerate session ID after HTTP headers have been sent' . ($file ? " (output started at $file:$line)." : '.'));
 			}
-			session_regenerate_id(TRUE);
+			if (session_id() !== '') {
+				session_regenerate_id(TRUE);
+			}
 			session_write_close();
 			$backup = $_SESSION;
 			session_start();
@@ -415,7 +407,7 @@ class Session extends Nette\Object
 
 			} else {
 				if (defined('SID')) {
-					throw new Nette\InvalidStateException("Unable to set 'session.$key' to value '$value' when session has been started" . ($this->started ? "." : " by session.auto_start or session_start()."));
+					throw new Nette\InvalidStateException("Unable to set 'session.$key' to value '$value' when session has been started" . ($this->started ? '.' : ' by session.auto_start or session_start().'));
 				}
 				if (isset($special[$key])) {
 					$key = "session_$key";
@@ -481,7 +473,7 @@ class Session extends Nette\Object
 		return $this->setOptions(array(
 			'cookie_path' => $path,
 			'cookie_domain' => $domain,
-			'cookie_secure' => $secure
+			'cookie_secure' => $secure,
 		));
 	}
 
@@ -545,10 +537,6 @@ class Session extends Nette\Object
 	 */
 	private function sendCookie()
 	{
-		if (!headers_sent() && ob_get_level() && ob_get_length()) {
-			trigger_error('Possible problem: you are starting session while already having some data in output buffer. This may not work if the outputted data grows. Try starting the session earlier.', E_USER_NOTICE);
-		}
-
 		$cookie = $this->getCookieParameters();
 		$this->response->setCookie(
 			session_name(), session_id(),

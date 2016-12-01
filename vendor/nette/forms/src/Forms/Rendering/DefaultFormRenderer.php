@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Forms\Rendering;
 
-use Nette,
-	Nette\Utils\Html;
+use Nette;
+use Nette\Utils\Html;
 
 
 /**
  * Converts a Form into the HTML output.
- *
- * @author     David Grudl
  */
 class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRenderer
 {
@@ -224,11 +222,11 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 		foreach ($errors as $error) {
 			$item = clone $item;
 			if ($error instanceof Html) {
-				$item->add($error);
+				$item->addHtml($error);
 			} else {
 				$item->setText($error);
 			}
-			$container->add($item);
+			$container->addHtml($item);
 		}
 		return "\n" . $container->render($control ? 1 : 0);
 	}
@@ -262,7 +260,7 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 
 			$text = $group->getOption('label');
 			if ($text instanceof Html) {
-				$s .= $this->getWrapper('group label')->add($text);
+				$s .= $this->getWrapper('group label')->addHtml($text);
 
 			} elseif (is_string($text)) {
 				if ($translator !== NULL) {
@@ -322,15 +320,15 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 
 			} else {
 				if ($buttons) {
-					$container->add($this->renderPairMulti($buttons));
+					$container->addHtml($this->renderPairMulti($buttons));
 					$buttons = NULL;
 				}
-				$container->add($this->renderPair($control));
+				$container->addHtml($this->renderPair($control));
 			}
 		}
 
 		if ($buttons) {
-			$container->add($this->renderPairMulti($buttons));
+			$container->addHtml($this->renderPairMulti($buttons));
 		}
 
 		$s = '';
@@ -349,8 +347,8 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 	public function renderPair(Nette\Forms\IControl $control)
 	{
 		$pair = $this->getWrapper('pair container');
-		$pair->add($this->renderLabel($control));
-		$pair->add($this->renderControl($control));
+		$pair->addHtml($this->renderLabel($control));
+		$pair->addHtml($this->renderControl($control));
 		$pair->class($this->getValue($control->isRequired() ? 'pair .required' : 'pair .optional'), TRUE);
 		$pair->class($control->hasErrors() ? $this->getValue('pair .error') : NULL, TRUE);
 		$pair->class($control->getOption('class'), TRUE);
@@ -393,8 +391,8 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 			$s[] = $el . $description;
 		}
 		$pair = $this->getWrapper('pair container');
-		$pair->add($this->renderLabel($control));
-		$pair->add($this->getWrapper('control container')->setHtml(implode(' ', $s)));
+		$pair->addHtml($this->renderLabel($control));
+		$pair->addHtml($this->getWrapper('control container')->setHtml(implode(' ', $s)));
 		return $pair->render(0);
 	}
 
@@ -408,7 +406,7 @@ class DefaultFormRenderer extends Nette\Object implements Nette\Forms\IFormRende
 		$suffix = $this->getValue('label suffix') . ($control->isRequired() ? $this->getValue('label requiredsuffix') : '');
 		$label = $control->getLabel();
 		if ($label instanceof Html) {
-			$label->add($suffix);
+			$label->addHtml($suffix);
 			if ($control->isRequired()) {
 				$label->class($this->getValue('control .required'), TRUE);
 			}

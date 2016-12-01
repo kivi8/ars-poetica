@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Latte (http://latte.nette.org)
- * Copyright (c) 2008 David Grudl (http://davidgrudl.com)
+ * This file is part of the Latte (https://latte.nette.org)
+ * Copyright (c) 2008 David Grudl (https://davidgrudl.com)
  */
 
 namespace Latte;
@@ -108,7 +108,7 @@ class Compiler extends Object
 
 		while ($this->htmlNode) {
 			if (!empty($this->htmlNode->macroAttrs)) {
-				throw new CompileException('Missing ' . self::printEndTag($this->macroNode));
+				throw new CompileException('Missing ' . self::printEndTag($this->htmlNode));
 			}
 			$this->htmlNode = $this->htmlNode->parentNode;
 		}
@@ -252,7 +252,7 @@ class Compiler extends Object
 					break;
 				}
 				if ($this->htmlNode->macroAttrs) {
-					throw new CompileException("Unexpected </$token->name>, expecting " . self::printEndTag($this->macroNode));
+					throw new CompileException("Unexpected </$token->name>, expecting " . self::printEndTag($this->htmlNode));
 				}
 				$this->htmlNode = $this->htmlNode->parentNode;
 			}
@@ -376,8 +376,12 @@ class Compiler extends Object
 
 	private function processComment(Token $token)
 	{
-		$isLeftmost = trim(substr($this->output, strrpos("\n$this->output", "\n"))) === '';
-		if (!$isLeftmost) {
+		$leftOfs = ($tmp = strrpos($this->output, "\n")) === FALSE ? 0 : $tmp + 1;
+		$isLeftmost = trim(substr($this->output, $leftOfs)) === '';
+		$isRightmost = substr($token->text, -1) === "\n";
+		if ($isLeftmost && $isRightmost) {
+			$this->output = substr($this->output, 0, $leftOfs);
+		} else {
 			$this->output .= substr($token->text, strlen(rtrim($token->text, "\n")));
 		}
 	}
@@ -429,7 +433,7 @@ class Compiler extends Object
 			$name = $nPrefix
 				? "</{$this->htmlNode->name}> for " . Parser::N_PREFIX . implode(' and ' . Parser::N_PREFIX, array_keys($this->htmlNode->macroAttrs))
 				: '{/' . $name . ($args ? ' ' . $args : '') . $modifiers . '}';
-			throw new CompileException("Unexpected $name" . ($node ? ', expecting ' . self::printEndTag($node) : ''));
+			throw new CompileException("Unexpected $name" . ($node ? ', expecting ' . self::printEndTag($node->prefix ? $this->htmlNode : $node) : ''));
 		}
 
 		$this->macroNode = $node->parentNode;
@@ -453,7 +457,7 @@ class Compiler extends Object
 	private function writeCode($code, & $output, $replaced, $isRightmost, $isLeftmost = NULL)
 	{
 		if ($isRightmost) {
-			$leftOfs = strrpos("\n$output", "\n");
+			$leftOfs = ($tmp = strrpos($output, "\n")) === FALSE ? 0 : $tmp + 1;
 			if ($isLeftmost === NULL) {
 				$isLeftmost = trim(substr($output, $leftOfs)) === '';
 			}
@@ -561,23 +565,26 @@ class Compiler extends Object
 		$inScript = in_array($this->context[0], array(self::CONTENT_JS, self::CONTENT_CSS), TRUE);
 
 		if (empty($this->macros[$name])) {
-			throw new CompileException("Unknown macro {{$name}}" . ($inScript ? ' (in JavaScript or CSS, try to put a space after bracket.)' : ''));
+			$hint = ($t = Helpers::getSuggestion(array_keys($this->macros), $name)) ? ", did you mean {{$t}}?" : '';
+			throw new CompileException("Unknown macro {{$name}}$hint" . ($inScript ? ' (in JavaScript or CSS, try to put a space after bracket or use n:syntax=off)' : ''));
 		}
 
-		if ($this->context[1] === self::CONTENT_URL) {
-			$modifiers = preg_replace('#\|nosafeurl\s?(?=\||\z)#i', '', $modifiers, -1, $found);
-			if (!$found && !preg_match('#\|datastream(?=\s|\||\z)#i', $modifiers)) {
-				$modifiers .= '|safeurl';
+		if (strpbrk($name, '=~%^&_')) {
+			if ($this->context[1] === self::CONTENT_URL) {
+				$modifiers = preg_replace('#\|nosafeurl\s?(?=\||\z)#i', '', $modifiers, -1, $found);
+				if (!$found && !preg_match('#\|datastream(?=\s|\||\z)#i', $modifiers)) {
+					$modifiers .= '|safeurl';
+				}
 			}
-		}
 
-		$modifiers = preg_replace('#\|noescape\s?(?=\||\z)#i', '', $modifiers, -1, $found);
-		if (!$found && strpbrk($name, '=~%^&_')) {
-			$modifiers .= '|escape';
-		}
+			$modifiers = preg_replace('#\|noescape\s?(?=\||\z)#i', '', $modifiers, -1, $found);
+			if (!$found) {
+				$modifiers .= '|escape';
+			}
 
-		if (!$found && $inScript && $name === '=' && preg_match('#["\'] *\z#', $this->tokens[$this->position - 1]->text)) {
-			throw new CompileException("Do not place {$this->tokens[$this->position]->text} inside quotes.");
+			if (!$found && $inScript && $name === '=' && preg_match('#["\'] *\z#', $this->tokens[$this->position - 1]->text)) {
+				throw new CompileException("Do not place {$this->tokens[$this->position]->text} inside quotes.");
+			}
 		}
 
 		foreach (array_reverse($this->macros[$name]) as $macro) {
@@ -594,11 +601,11 @@ class Compiler extends Object
 	}
 
 
-	private static function printEndTag(MacroNode $node)
+	private static function printEndTag($node)
 	{
-		if ($node->prefix) {
-			return  "</{$node->htmlNode->name}> for " . Parser::N_PREFIX
-				. implode(' and ' . Parser::N_PREFIX, array_keys($node->htmlNode->macroAttrs));
+		if ($node instanceof HtmlNode) {
+			return  "</{$node->name}> for " . Parser::N_PREFIX
+				. implode(' and ' . Parser::N_PREFIX, array_keys($node->macroAttrs));
 		} else {
 			return "{/$node->name}";
 		}

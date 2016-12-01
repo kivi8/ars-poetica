@@ -1,14 +1,7 @@
 {define title}Kontakt{/define}
 {block content}
 
-<p>Chcete se zapojit? Máte nápad, otázku, stížnost nebo pochvalu? Napište nám!</p>
-<p>E-mail: <a href="mailto:arspoetica@email.cz">arspoetica@email.cz</a></p>
-<p>Facebook: <a href="https://www.facebook.com/arspoetica.net">www.facebook.com/arspoetica.net</a></p>
-<p>
-    <h4 class="inline">Nebo nám cokoliv napište: </h4> <h3 class="inline"> <a n:href="SendArticle:">Poslat rovnou do redakce</a> !</h3>
-</p>
-
-<hr>
+{$text|noescape}
 
 {form newWriterForm}
     <table>
@@ -42,4 +35,5 @@
     
     {input submit, class=>bigSubmit}
 {/form} 
+{if $user->isAllowed('Article', 'moderate')}<a n:href=":Admin:Text:default">Upravit</a>{/if}
 

@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Reflection;
 
-use Nette,
-	Nette\Utils\Strings;
+use Nette;
+use Nette\Utils\Strings;
 
 
 /**
  * Annotations support for PHP.
- *
- * @author     David Grudl
  * @Annotation
  */
 class AnnotationsParser
@@ -164,7 +162,7 @@ class AnnotationsParser
 		}
 
 		$filename = $reflector->getFileName();
-		$parsed = static::getCache()->load($filename, function(& $dp) use ($filename) {
+		$parsed = static::getCache()->load($filename, function (& $dp) use ($filename) {
 			if (AnnotationsParser::$autoRefresh) {
 				$dp[Nette\Caching\Cache::FILES] = $filename;
 			}
@@ -301,6 +299,7 @@ class AnnotationsParser
 					if ($name = self::fetch($tokens, T_STRING)) {
 						$class = $namespace . $name;
 						$classLevel = $level + 1;
+						$res[$class] = array();
 						if ($docComment) {
 							$res[$class]['class'] = $docComment;
 						}

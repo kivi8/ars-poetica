@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Tracy (http://tracy.nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Tracy (https://tracy.nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tracy;
@@ -58,7 +58,7 @@ class BlueScreen
 		$sourceIsUrl = preg_match('#^https?://#', $source);
 		$title = $exception instanceof \ErrorException
 			? Helpers::errorTypeToString($exception->getSeverity())
-			: get_class($exception);
+			: Helpers::getClass($exception);
 		$skipError = $sourceIsUrl && $exception instanceof \ErrorException && !empty($exception->skippable)
 			? $source . (strpos($source, '?') ? '&' : '?') . '_tracy_skip_error'
 			: NULL;
@@ -135,7 +135,7 @@ class BlueScreen
 		$source = explode("\n", "\n" . str_replace("\r\n", "\n", $html));
 		$out = '';
 		$spans = 1;
-		$start = $i = max(1, $line - floor($lines * 2 / 3));
+		$start = $i = max(1, min($line, count($source) - 1) - floor($lines * 2 / 3));
 		while (--$i >= 1) { // find last highlighted block
 			if (preg_match('#.*(</?span[^>]*>)#', $source[$i], $m)) {
 				if ($m[1] !== '</span>') {
@@ -177,8 +177,10 @@ class BlueScreen
 	 */
 	public function isCollapsed($file)
 	{
+		$file = strtr($file, '\\', '/') . '/';
 		foreach ($this->collapsePaths as $path) {
-			if (strpos(strtr($file, '\\', '/'), strtr("$path/", '\\', '/')) === 0) {
+			$path = strtr($path, '\\', '/') . '/';
+			if (strncmp($file, $path, strlen($path)) === 0) {
 				return TRUE;
 			}
 		}

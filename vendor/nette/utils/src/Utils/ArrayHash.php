@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Utils;
@@ -12,8 +12,6 @@ use Nette;
 
 /**
  * Provides objects to work as array.
- *
- * @author     David Grudl
  */
 class ArrayHash extends \stdClass implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -43,7 +41,7 @@ class ArrayHash extends \stdClass implements \ArrayAccess, \Countable, \Iterator
 	 */
 	public function getIterator()
 	{
-		return new \RecursiveArrayIterator($this);
+		return new \RecursiveArrayIterator((array) $this);
 	}
 
 

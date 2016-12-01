@@ -2,6 +2,26 @@
 
 {block content}
 
+<script>
+    
+    function actual(){    
+        $("#subSection").text($('#frm-addArticle-underSection option:selected').text());
+        $("#serial").text($('#frm-addArticle-underSubSection option:selected').text());
+        
+        if(!$('#frm-addArticle-underSection').val()){
+            $("#subSection").parent().parent("div").css('display','none');                     
+        }
+        
+        if(!$('#frm-addArticle-underSubSection').val()){
+            $("#serial").parent().parent("div").css('display','none');          
+        }
+    }
+    
+    $(document).ready(function(){       
+        actual();        
+    });
+</script>
+
 {form addArticle}
     <table>
         
@@ -69,54 +89,110 @@
                 
     </table>  
             
-    {label underSection /}
-    {input underSection}
+    <h2>{label underSection /}</h2>
+    
+    {snippet underSection}
+    
+	{input underSection}
         
+    {/snippet}      
+    
     {snippet underSubSectionSnippet}  
         
-        {label underSubSection /}
+        <h2>{label underSubSection /}</h2>
+               
         {input underSubSection}
-        
+               
+    
         {snippet underSerialSnippet}
             
-            {label underSerial /}
+            <h2>{label underSerial /}</h2>
+                       
             {input underSerial}
         
-        {/snippet}
+    <div id="addSerial">
+        <h4 class="arrowText">Vytvořit seriál <img class="arrow" alt="click" src="{$basePath}/images/arrow.png"></h4>
+        <div class="hide-box">
+            <input type="text" name="addSerial">
+            <span class="btn btn-default" id="addNewAjaxSerial">Přidat</span>
+        </div>
+    </div>
+        {/snippet}      
         
-        {include #js}
         
-    {/snippet}     
+        <script>
+    
+            $('#frm-addArticle-underSection').on('change', function() {	
+                $.nette.ajax({
+                    type: 'GET',
+                    url: '/administrace/clanky/pridat-clanek?do=underSectionChange',
+                    data: {
+                        'value': $(this).val()
+                    }
+                });
+            });
+
+            $('#frm-addArticle-underSubSection').on('change', function() {
+	    
+                $.nette.ajax({
+                    type: 'GET',
+                    url: '/administrace/clanky/pridat-clanek?do=subSectionChange',
+                    data: {
+                        'value': $(this).val()
+                    }
+                });
+            });   
+</script>
+        
+    {/snippet}    
+    {snippet jsUpdate}
+    <script>
+    
+    var subSection = $('#frm-addArticle-underSubSection').val();
+    var section = $('#frm-addArticle-underSection').val();   
+    $("#addSerial").css("display", "none");
+    if(subSection && subSection != '0' && section && section != '0'){
+	$("#addSerial").css("display", "block");
+    }
+    
+	
+    
+        $('#addNewAjaxSerial').on('click',function() {
+            $.nette.ajax({
+                type: 'GET',
+                url: '/administrace/clanky/pridat-clanek?do=addNewAjaxSection',
+                data: {
+                    'name': $(this).prev('input:text').val(),
+                    'underSection': $('#frm-addArticle-underSection').val(),
+                    'underSubSection': $('#frm-addArticle-underSubSection').val()
+                }                   
+            });
+        });
+        
+	$('.hide-box').css('display','none');
+    
+                $('.arrowText').on('click',function (){
+                    var txt = $(this).next('.hide-box'); 
+                    if(txt.css('display') === 'none'){
+                        txt.show(200);
+                        $(this).children('.arrow').css('transform', 'rotate(-180deg)');
+                    }
+                    else{
+                        txt.hide(100);
+                        $(this).children('.arrow').css('transform', 'rotate(0deg)');
+                    }
+                }); 
+	
+    </script>  
+    
+    
+    {/snippet}
         
         
             {input submitArticle}
 {/form}    
 
 {/block}
-
-{define #js}
-
-<script type="text/javascript">
-{include #jsCallback, input => underSection, link => underSectionChange}
-{include #jsCallback, input => underSubSection, link => subSectionChange}
-</script>
-
-{/define}
-
-
-{define #jsCallback}
-
-$('#{$control["addArticle"][$input]->htmlId}').on('change', function() {
-    $.nette.ajax({
-        type: 'GET',
-        url: '{link {$link}!}',
-        data: {
-            'value': $(this).val(),
-        }
-    });
-});
-
-{/define}
 
 {define script}
     <script src="{$basePath}/js/vendor/tinymce/tinymce.min.js"></script>

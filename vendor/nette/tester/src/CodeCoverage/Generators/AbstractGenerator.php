@@ -2,7 +2,7 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester\CodeCoverage\Generators;
@@ -38,7 +38,7 @@ abstract class AbstractGenerator
 			throw new \Exception("File '$file' is missing.");
 		}
 
-		$this->data = @unserialize(file_get_contents($file));
+		$this->data = @unserialize(file_get_contents($file)); // @ is escalated to exception
 		if (!is_array($this->data)) {
 			throw new \Exception("Content of file '$file' is invalid.");
 		}
@@ -65,12 +65,12 @@ abstract class AbstractGenerator
 
 	public function render($file = NULL)
 	{
-		$handle = $file ? @fopen($file, 'w') : STDOUT;
+		$handle = $file ? @fopen($file, 'w') : STDOUT; // @ is escalated to exception
 		if (!$handle) {
 			throw new \Exception("Unable to write to file '$file'.");
 		}
 
-		ob_start(function($buffer) use ($handle) { fwrite($handle, $buffer); }, 4096);
+		ob_start(function ($buffer) use ($handle) { fwrite($handle, $buffer); }, 4096);
 		try {
 			$this->renderSelf();
 		} catch (\Exception $e) {

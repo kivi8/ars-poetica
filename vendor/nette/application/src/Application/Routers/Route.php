@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Application\Routers;
@@ -15,10 +15,6 @@ use Nette\Utils\Strings;
 /**
  * The bidirectional route is responsible for mapping
  * HTTP request to a Request object for dispatch and vice-versa.
- *
- * @property-read string $mask
- * @property-read array $defaults
- * @property-read int $flags
  */
 class Route extends Nette\Object implements Application\IRouter
 {
@@ -113,20 +109,20 @@ class Route extends Nette\Object implements Application\IRouter
 
 	/**
 	 * @param  string  URL mask, e.g. '<presenter>/<action>/<id \d{1,3}>'
-	 * @param  array|string   default values or metadata
+	 * @param  array|string|\Closure  default values or metadata or callback for NetteModule\MicroPresenter
 	 * @param  int     flags
 	 */
 	public function __construct($mask, $metadata = array(), $flags = 0)
 	{
 		if (is_string($metadata)) {
-			$a = strrpos($metadata, ':');
+			$a = strrpos($tmp = $metadata, ':');
 			if (!$a) {
 				throw new Nette\InvalidArgumentException("Second argument must be array or string in format Presenter:action, '$metadata' given.");
 			}
-			$metadata = array(
-				self::PRESENTER_KEY => substr($metadata, 0, $a),
-				'action' => $a === strlen($metadata) - 1 ? NULL : substr($metadata, $a + 1),
-			);
+			$metadata = array(self::PRESENTER_KEY => substr($tmp, 0, $a));
+			if ($a < strlen($tmp) - 1) {
+				$metadata['action'] = substr($tmp, $a + 1);
+			}
 		} elseif ($metadata instanceof \Closure || $metadata instanceof Nette\Callback) {
 			$metadata = array(
 				self::PRESENTER_KEY => 'Nette:Micro',
@@ -154,11 +150,13 @@ class Route extends Nette\Object implements Application\IRouter
 		if ($this->type === self::HOST) {
 			$host = $url->getHost();
 			$path = '//' . $host . $url->getPath();
-			$host = ip2long($host) ? array($host) : array_reverse(explode('.', $host));
+			$parts = ip2long($host) ? array($host) : array_reverse(explode('.', $host));
 			$re = strtr($re, array(
 				'/%basePath%/' => preg_quote($url->getBasePath(), '#'),
-				'%tld%' => preg_quote($host[0], '#'),
-				'%domain%' => preg_quote(isset($host[1]) ? "$host[1].$host[0]" : $host[0], '#'),
+				'%tld%' => preg_quote($parts[0], '#'),
+				'%domain%' => preg_quote(isset($parts[1]) ? "$parts[1].$parts[0]" : $parts[0], '#'),
+				'%sld%' => preg_quote(isset($parts[1]) ? $parts[1] : '', '#'),
+				'%host%' => preg_quote($host, '#'),
 			));
 
 		} elseif ($this->type === self::RELATIVE) {
@@ -242,16 +240,12 @@ class Route extends Nette\Object implements Application\IRouter
 		} elseif (!is_string($params[self::PRESENTER_KEY])) {
 			return NULL;
 		}
-		if (isset($this->metadata[self::MODULE_KEY])) {
-			if (!isset($params[self::MODULE_KEY])) {
-				throw new Nette\InvalidStateException('Missing module in route definition.');
-			}
-			$presenter = $params[self::MODULE_KEY] . ':' . $params[self::PRESENTER_KEY];
-			unset($params[self::MODULE_KEY], $params[self::PRESENTER_KEY]);
+		$presenter = $params[self::PRESENTER_KEY];
+		unset($params[self::PRESENTER_KEY]);
 
-		} else {
-			$presenter = $params[self::PRESENTER_KEY];
-			unset($params[self::PRESENTER_KEY]);
+		if (isset($this->metadata[self::MODULE_KEY])) {
+			$presenter = (isset($params[self::MODULE_KEY]) ? $params[self::MODULE_KEY] . ':' : '') . $presenter;
+			unset($params[self::MODULE_KEY]);
 		}
 
 		return new Application\Request(
@@ -296,7 +290,7 @@ class Route extends Nette\Object implements Application\IRouter
 				$a = strrpos($presenter, ':');
 			}
 			if ($a === FALSE) {
-				$params[self::MODULE_KEY] = '';
+				$params[self::MODULE_KEY] = isset($module[self::VALUE]) ? '' : NULL;
 			} else {
 				$params[self::MODULE_KEY] = substr($presenter, 0, $a);
 				$params[self::PRESENTER_KEY] = substr($presenter, $a + 1);
@@ -388,7 +382,18 @@ class Route extends Nette\Object implements Application\IRouter
 		} while (TRUE);
 
 
-		if ($this->type !== self::HOST) {
+		if ($this->type === self::HOST) {
+			$host = $refUrl->getHost();
+			$parts = ip2long($host) ? array($host) : array_reverse(explode('.', $host));
+			$url = strtr($url, array(
+				'/%basePath%/' => $refUrl->getBasePath(),
+				'%tld%' => $parts[0],
+				'%domain%' => isset($parts[1]) ? "$parts[1].$parts[0]" : $parts[0],
+				'%sld%' => isset($parts[1]) ? $parts[1] : '',
+				'%host%' => $host,
+			));
+			$url = ($this->flags & self::SECURED ? 'https:' : 'http:') . $url;
+		} else {
 			if ($this->lastRefUrl !== $refUrl) {
 				$scheme = ($this->flags & self::SECURED ? 'https://' : 'http://');
 				$basePath = ($this->type === self::RELATIVE ? $refUrl->getBasePath() : '');
@@ -396,16 +401,6 @@ class Route extends Nette\Object implements Application\IRouter
 				$this->lastRefUrl = $refUrl;
 			}
 			$url = $this->lastBaseUrl . $url;
-
-		} else {
-			$host = $refUrl->getHost();
-			$host = ip2long($host) ? array($host) : array_reverse(explode('.', $host));
-			$url = strtr($url, array(
-				'/%basePath%/' => $refUrl->getBasePath(),
-				'%tld%' => $host[0],
-				'%domain%' => isset($host[1]) ? "$host[1].$host[0]" : $host[0],
-			));
-			$url = ($this->flags & self::SECURED ? 'https:' : 'http:') . $url;
 		}
 
 		if (strpos($url, '//', 7) !== FALSE) {
@@ -461,7 +456,7 @@ class Route extends Nette\Object implements Application\IRouter
 			}
 		}
 
-		if (strpbrk($mask, '?<[') === FALSE) {
+		if (strpbrk($mask, '?<[]') === FALSE) {
 			$this->re = '#' . preg_quote($mask, '#') . '/?\z#A';
 			$this->sequence = array($mask);
 			$this->metadata = $metadata;
@@ -619,7 +614,7 @@ class Route extends Nette\Object implements Application\IRouter
 		} while (TRUE);
 
 		if ($brackets) {
-			throw new Nette\InvalidArgumentException("Missing closing ']' in mask '$mask'.");
+			throw new Nette\InvalidArgumentException("Missing '[' in mask '$mask'.");
 		}
 
 		$this->aliases = $aliases;
@@ -806,7 +801,7 @@ class Route extends Nette\Object implements Application\IRouter
 		trigger_error(__METHOD__ . '() is deprecated.', E_USER_DEPRECATED);
 		if (isset(static::$styles[$style])) {
 			throw new Nette\InvalidArgumentException("Style '$style' already exists.");
-		}
+}
 
 		if ($parent !== NULL) {
 			if (!isset(static::$styles[$parent])) {

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Tracy (http://tracy.nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Tracy (https://tracy.nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tracy;
@@ -31,7 +31,7 @@ class DefaultBarPanel implements IBarPanel
 	 */
 	public function getTab()
 	{
-		ob_start();
+		ob_start(function () {});
 		$data = $this->data;
 		require __DIR__ . "/assets/Bar/{$this->id}.tab.phtml";
 		return ob_get_clean();
@@ -44,7 +44,7 @@ class DefaultBarPanel implements IBarPanel
 	 */
 	public function getPanel()
 	{
-		ob_start();
+		ob_start(function () {});
 		if (is_file(__DIR__ . "/assets/Bar/{$this->id}.panel.phtml")) {
 			$data = $this->data;
 			require __DIR__ . "/assets/Bar/{$this->id}.panel.phtml";

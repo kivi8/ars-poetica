@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\ApplicationDI;
@@ -17,7 +17,7 @@ use Nette\Application\UI;
 class ApplicationExtension extends Nette\DI\CompilerExtension
 {
 	public $defaults = array(
-		'debugger' => TRUE,
+		'debugger' => NULL,
 		'errorPresenter' => 'Nette:Error',
 		'catchExceptions' => NULL,
 		'mapping' => NULL,
@@ -39,6 +39,7 @@ class ApplicationExtension extends Nette\DI\CompilerExtension
 
 	public function __construct($debugMode = FALSE, array $scanDirs = NULL, $tempDir = NULL)
 	{
+		$this->defaults['debugger'] = interface_exists('Tracy\IBarPanel');
 		$this->defaults['scanDirs'] = (array) $scanDirs;
 		$this->defaults['scanComposer'] = class_exists('Composer\Autoload\ClassLoader');
 		$this->defaults['catchExceptions'] = !$debugMode;

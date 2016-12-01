@@ -24,18 +24,18 @@ class Helper extends \Nette\Object{
             $raw[$key] = $value;
         }
         
-        $title = isset($raw['title'])?$raw['title'].' ':'';
+        //$title = isset($raw['title'])?$raw['title'].' ':'';
                 
         if(!empty($raw['name'])){
-            return $title.$raw['name'];
+            return $raw['name'];
         }
         
         if(!empty($raw['nickName'])){
-            return $title.$raw['nickName'];
+            return $raw['nickName'];
         }
         
         if(!empty($raw['mail']) && $mail){           
-            return $title.$raw['mail'];
+            return $raw['mail'];
         }     
         
         return 'Uživatel';        

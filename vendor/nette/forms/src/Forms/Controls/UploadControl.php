@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Forms\Controls;
 
-use Nette,
-	Nette\Http\FileUpload;
+use Nette;
+use Nette\Http\FileUpload;
 
 
 /**
  * Text box and browse button that allow users to select a file to upload to the server.
- *
- * @author     David Grudl
  */
 class UploadControl extends BaseControl
 {
@@ -74,6 +72,7 @@ class UploadControl extends BaseControl
 
 	/**
 	 * @return self
+	 * @internal
 	 */
 	public function setValue($value)
 	{
@@ -88,6 +87,20 @@ class UploadControl extends BaseControl
 	public function isFilled()
 	{
 		return $this->value instanceof FileUpload ? $this->value->isOk() : (bool) $this->value; // ignore NULL object
+	}
+
+
+	/**
+	 * Have been all files succesfully uploaded?
+	 * @return bool
+	 */
+	public function isOk()
+	{
+		return $this->value instanceof FileUpload
+			? $this->value->isOk()
+			: $this->value && array_reduce($this->value, function ($carry, $fileUpload) {
+				return $carry && $fileUpload->isOk();
+			}, TRUE);
 	}
 
 }

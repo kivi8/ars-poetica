@@ -39,11 +39,17 @@ class UserManager extends Manager implements Nette\Security\IAuthenticator{
                 } elseif($row['deleted']){
                     throw new AuthenticationException('Zablokovaný účet', self::INVALID_CREDENTIAL);
                 }
-
+                
+                $this->logInToForum($username, $password);
+                
 		$arr = $row->toArray();
 		unset($arr['password']);
 		return new Nette\Security\Identity($row['id'], $row['permissions'], $arr);
 	}
+        
+        private function logInToForum(){
+            
+        }
 
 
 	/**
@@ -53,6 +59,7 @@ class UserManager extends Manager implements Nette\Security\IAuthenticator{
 	 * @param  string
 	 */
         public function registerNew($mail, $password, $nickName = ''){
+            
             if($this->checkName($mail, 'mail')){
                 throw new \Exception('Použitý mail, klikněte na ztracené heslo');
             }

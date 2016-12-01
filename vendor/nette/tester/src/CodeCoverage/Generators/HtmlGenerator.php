@@ -2,7 +2,7 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester\CodeCoverage\Generators;
@@ -96,6 +96,8 @@ class HtmlGenerator extends AbstractGenerator
 				$coverage = round($covered * 100 / $total);
 				$this->totalSum += $total;
 				$this->coveredSum += $covered;
+			} else {
+				$this->totalSum += count(file($entry, FILE_SKIP_EMPTY_LINES));
 			}
 
 			$light = $total ? $total < 5 : count(file($entry)) < 50;

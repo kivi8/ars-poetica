@@ -1,28 +1,28 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Neon;
 
-use Nette;
-
 
 /**
  * Parser for Nette Object Notation.
- *
- * @author     David Grudl
  * @internal
  */
 class Decoder
 {
-	/** @var array */
-	public static $patterns = array(
+	/** @deprecated */
+	public static $patterns = self::PATTERNS;
+
+	const PATTERNS = [
 		'
+			\'\'\'\n (?:(?: [^\n] | \n(?![\t\ ]*\'\'\') )*+ \n)?[\t\ ]*\'\'\' |
+			"""\n (?:(?: [^\n] | \n(?![\t\ ]*""") )*+ \n)?[\t\ ]*""" |
 			\'[^\'\n]*\' |
-			"(?: \\\\. | [^"\\\\\n] )*"
+			" (?: \\\\. | [^"\\\\\n] )* "
 		', // string
 		'
 			(?: [^#"\',:=[\]{}()\x00-\x20!`-] | [:-][^"\',\]})\s] )
@@ -38,13 +38,31 @@ class Decoder
 		'?:\#.*', // comment
 		'\n[\t\ ]*', // new line + indent
 		'?:[\t\ ]+', // whitespace
-	);
+	];
 
-	private static $brackets = array(
+	const PATTERN_DATETIME = '#\d\d\d\d-\d\d?-\d\d?(?:(?:[Tt]| +)\d\d?:\d\d:\d\d(?:\.\d*)? *(?:Z|[-+]\d\d?(?::?\d\d)?)?)?\z#A';
+
+	const PATTERN_HEX = '#0x[0-9a-fA-F]+\z#A';
+
+	const PATTERN_OCTAL = '#0o[0-7]+\z#A';
+
+	const PATTERN_BINARY = '#0b[0-1]+\z#A';
+
+	const SIMPLE_TYPES = [
+		'true' => 'TRUE', 'True' => 'TRUE', 'TRUE' => 'TRUE', 'yes' => 'TRUE', 'Yes' => 'TRUE', 'YES' => 'TRUE', 'on' => 'TRUE', 'On' => 'TRUE', 'ON' => 'TRUE',
+		'false' => 'FALSE', 'False' => 'FALSE', 'FALSE' => 'FALSE', 'no' => 'FALSE', 'No' => 'FALSE', 'NO' => 'FALSE', 'off' => 'FALSE', 'Off' => 'FALSE', 'OFF' => 'FALSE',
+		'null' => 'NULL', 'Null' => 'NULL', 'NULL' => 'NULL',
+	];
+
+	const ESCAPE_SEQUENCES = [
+		't' => "\t", 'n' => "\n", 'r' => "\r", 'f' => "\x0C", 'b' => "\x08", '"' => '"', '\\' => '\\', '/' => '/', '_' => "\xc2\xa0",
+	];
+
+	const BRACKETS = [
 		'[' => ']',
 		'{' => '}',
 		'(' => ')',
-	);
+	];
 
 	/** @var string */
 	private $input;
@@ -72,7 +90,7 @@ class Decoder
 		}
 		$this->input = "\n" . str_replace("\r", '', $input); // \n forces indent detection
 
-		$pattern = '~(' . implode(')|(', self::$patterns) . ')~Amix';
+		$pattern = '~(' . implode(')|(', self::PATTERNS) . ')~Amix';
 		$this->tokens = preg_split($pattern, $this->input, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE | PREG_SPLIT_DELIM_CAPTURE);
 
 		$last = end($this->tokens);
@@ -126,8 +144,8 @@ class Decoder
 
 				} elseif ($hasKey && $key === NULL && $hasValue && !$inlineParser) {
 					$n++;
-					$result[] = $this->parse($indent . '  ', array(), $value, TRUE);
-					$newIndent = isset($tokens[$n], $tokens[$n+1]) ? (string) substr($tokens[$n][0], 1) : ''; // not last
+					$result[] = $this->parse($indent . '  ', [], $value, TRUE);
+					$newIndent = isset($tokens[$n], $tokens[$n + 1]) ? (string) substr($tokens[$n][0], 1) : ''; // not last
 					if (strlen($newIndent) > strlen($indent)) {
 						$n++;
 						$this->error('Bad indentation');
@@ -153,23 +171,23 @@ class Decoder
 				$key = NULL;
 				$hasKey = TRUE;
 
-			} elseif (isset(self::$brackets[$t])) { // Opening bracket [ ( {
+			} elseif (($tmp = self::BRACKETS) && isset($tmp[$t])) { // Opening bracket [ ( {
 				if ($hasValue) {
 					if ($t !== '(') {
 						$this->error();
 					}
 					$n++;
 					if ($value instanceof Entity && $value->value === Neon::CHAIN) {
-						end($value->attributes)->attributes = $this->parse(FALSE, array());
+						end($value->attributes)->attributes = $this->parse(FALSE, []);
 					} else {
-						$value = new Entity($value, $this->parse(FALSE, array()));
+						$value = new Entity($value, $this->parse(FALSE, []));
 					}
 				} else {
 					$n++;
-					$value = $this->parse(FALSE, array());
+					$value = $this->parse(FALSE, []);
 				}
 				$hasValue = TRUE;
-				if (!isset($tokens[$n]) || $tokens[$n][0] !== self::$brackets[$t]) { // unexpected type of bracket or block-parser
+				if (!isset($tokens[$n]) || $tokens[$n][0] !== self::BRACKETS[$t]) { // unexpected type of bracket or block-parser
 					$this->error();
 				}
 
@@ -187,10 +205,10 @@ class Decoder
 					}
 
 				} else {
-					while (isset($tokens[$n+1]) && $tokens[$n+1][0][0] === "\n") {
+					while (isset($tokens[$n + 1]) && $tokens[$n + 1][0][0] === "\n") {
 						$n++; // skip to last indent
 					}
-					if (!isset($tokens[$n+1])) {
+					if (!isset($tokens[$n + 1])) {
 						break;
 					}
 
@@ -210,7 +228,7 @@ class Decoder
 							$this->error('Bad indentation');
 						}
 						$this->addValue($result, $key, $this->parse($newIndent));
-						$newIndent = isset($tokens[$n], $tokens[$n+1]) ? (string) substr($tokens[$n][0], 1) : ''; // not last
+						$newIndent = isset($tokens[$n], $tokens[$n + 1]) ? (string) substr($tokens[$n][0], 1) : ''; // not last
 						if (strlen($newIndent) > strlen($indent)) {
 							$n++;
 							$this->error('Bad indentation');
@@ -235,35 +253,46 @@ class Decoder
 					}
 				}
 
-			} elseif ($hasValue) { // Value
-				if ($value instanceof Entity) { // Entity chaining
-					if ($value->value !== Neon::CHAIN) {
-						$value = new Entity(Neon::CHAIN, array($value));
-					}
-					$value->attributes[] = new Entity($t);
-				} else {
-					$this->error();
-				}
 			} else { // Value
-				static $consts = array(
-					'true' => TRUE, 'True' => TRUE, 'TRUE' => TRUE, 'yes' => TRUE, 'Yes' => TRUE, 'YES' => TRUE, 'on' => TRUE, 'On' => TRUE, 'ON' => TRUE,
-					'false' => FALSE, 'False' => FALSE, 'FALSE' => FALSE, 'no' => FALSE, 'No' => FALSE, 'NO' => FALSE, 'off' => FALSE, 'Off' => FALSE, 'OFF' => FALSE,
-					'null' => 0, 'Null' => 0, 'NULL' => 0,
-				);
-				if ($t[0] === '"') {
-					$value = preg_replace_callback('#\\\\(?:ud[89ab][0-9a-f]{2}\\\\ud[c-f][0-9a-f]{2}|u[0-9a-f]{4}|x[0-9a-f]{2}|.)#i', array($this, 'cbString'), substr($t, 1, -1));
-				} elseif ($t[0] === "'") {
-					$value = substr($t, 1, -1);
-				} elseif (isset($consts[$t]) && (!isset($tokens[$n+1][0]) || ($tokens[$n+1][0] !== ':' && $tokens[$n+1][0] !== '='))) {
-					$value = $consts[$t] === 0 ? NULL : $consts[$t];
+				if ($t[0] === '"' || $t[0] === "'") {
+					if (preg_match('#^...\n+([\t ]*)#', $t, $m)) {
+						$converted = substr($t, 3, -3);
+						$converted = str_replace("\n" . $m[1], "\n", $converted);
+						$converted = preg_replace('#^\n|\n[\t ]*+\z#', '', $converted);
+					} else {
+						$converted = substr($t, 1, -1);
+					}
+					if ($t[0] === '"') {
+						$converted = preg_replace_callback('#\\\\(?:ud[89ab][0-9a-f]{2}\\\\ud[c-f][0-9a-f]{2}|u[0-9a-f]{4}|x[0-9a-f]{2}|.)#i', [$this, 'cbString'], $converted);
+					}
+				} elseif (($fix56 = self::SIMPLE_TYPES) && isset($fix56[$t]) && (!isset($tokens[$n + 1][0]) || ($tokens[$n + 1][0] !== ':' && $tokens[$n + 1][0] !== '='))) {
+					$converted = constant(self::SIMPLE_TYPES[$t]);
 				} elseif (is_numeric($t)) {
-					$value = $t * 1;
-				} elseif (preg_match('#\d\d\d\d-\d\d?-\d\d?(?:(?:[Tt]| +)\d\d?:\d\d:\d\d(?:\.\d*)? *(?:Z|[-+]\d\d?(?::\d\d)?)?)?\z#A', $t)) {
-					$value = new \DateTime($t);
+					$converted = $t * 1;
+				} elseif (preg_match(self::PATTERN_HEX, $t)) {
+					$converted = hexdec($t);
+				} elseif (preg_match(self::PATTERN_OCTAL, $t)) {
+					$converted = octdec($t);
+				} elseif (preg_match(self::PATTERN_BINARY, $t)) {
+					$converted = bindec($t);
+				} elseif (preg_match(self::PATTERN_DATETIME, $t)) {
+					$converted = new \DateTimeImmutable($t);
 				} else { // literal
-					$value = $t;
+					$converted = $t;
 				}
-				$hasValue = TRUE;
+				if ($hasValue) {
+					if ($value instanceof Entity) { // Entity chaining
+						if ($value->value !== Neon::CHAIN) {
+							$value = new Entity(Neon::CHAIN, [$value]);
+						}
+						$value->attributes[] = new Entity($converted);
+					} else {
+						$this->error();
+					}
+				} else {
+					$value = $converted;
+					$hasValue = TRUE;
+				}
 			}
 		}
 
@@ -300,10 +329,9 @@ class Decoder
 
 	private function cbString($m)
 	{
-		static $mapping = array('t' => "\t", 'n' => "\n", 'r' => "\r", 'f' => "\x0C", 'b' => "\x08", '"' => '"', '\\' => '\\', '/' => '/', '_' => "\xc2\xa0");
 		$sq = $m[0];
-		if (isset($mapping[$sq[1]])) {
-			return $mapping[$sq[1]];
+		if (($fix56 = self::ESCAPE_SEQUENCES) && isset($fix56[$sq[1]])) { // workaround for PHP 5.6
+			return self::ESCAPE_SEQUENCES[$sq[1]];
 		} elseif ($sq[1] === 'u' && strlen($sq) >= 6) {
 			$lead = hexdec(substr($sq, 2, 4));
 			$tail = hexdec(substr($sq, 8, 4));

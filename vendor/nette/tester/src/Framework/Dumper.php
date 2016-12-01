@@ -2,7 +2,7 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester;
@@ -30,7 +30,7 @@ class Dumper
 			foreach (array_merge(range("\x00", "\x1F"), range("\x7F", "\xFF")) as $ch) {
 				$table[$ch] = '\x' . str_pad(dechex(ord($ch)), 2, '0', STR_PAD_LEFT);
 			}
-			$table["\\"] = '\\\\';
+			$table['\\'] = '\\\\';
 			$table["\r"] = '\r';
 			$table["\n"] = '\n';
 			$table["\t"] = '\t';
@@ -47,10 +47,10 @@ class Dumper
 
 		} elseif (is_float($var)) {
 			if (!is_finite($var)) {
-				return var_export($var, TRUE);
+				return str_replace('.0', '', var_export($var, TRUE)); // workaround for PHP 7.0.2
 			}
 			$var = str_replace(',', '.', "$var");
-			return strpos($var, '.') === FALSE ? $var . '.0' : $var;
+			return strpos($var, '.') === FALSE ? $var . '.0' : $var; // workaround for PHP < 7.0.2
 
 		} elseif (is_string($var)) {
 			if (preg_match('#^(.{' . self::$maxLength . '}).#su', $var, $m)) {
@@ -70,12 +70,12 @@ class Dumper
 					break;
 				}
 				$out .= ($k === $counter ? '' : self::toLine($k) . ' => ')
-					. (is_array($v) ? 'array(...)' : self::toLine($v));
+					. (is_array($v) && $v ? 'array(...)' : self::toLine($v));
 				$counter = is_int($k) ? max($k + 1, $counter) : $counter;
 			}
 			return "array($out)";
 
-		} elseif ($var instanceof \Exception) {
+		} elseif ($var instanceof \Exception || $var instanceof \Throwable) {
 			return 'Exception ' . get_class($var) . ': ' . ($var->getCode() ? '#' . $var->getCode() . ' ' : '') . $var->getMessage();
 
 		} elseif (is_object($var)) {
@@ -102,7 +102,7 @@ class Dumper
 			$line .= '(' . $object->format('Y-m-d H:i:s O') . ')';
 		}
 
-		return $line . '(#' . substr(md5(spl_object_hash($object)), 0, 4) . ')';
+		return $line . '(' . self::hash($object) . ')';
 	}
 
 
@@ -114,6 +114,17 @@ class Dumper
 	public static function toPhp($var)
 	{
 		return self::_toPhp($var);
+	}
+
+
+	/**
+	 * Returns object's stripped hash.
+	 * @param  object
+	 * @return string
+	 */
+	private static function hash($object)
+	{
+		return '#' . substr(md5(spl_object_hash($object)), 0, 4);
 	}
 
 
@@ -181,7 +192,14 @@ class Dumper
 			}
 			return 'array(' . $out . ')';
 
+		} elseif ($var instanceof \Closure) {
+			$rc = new \ReflectionFunction($var);
+			return "/* Closure defined in file {$rc->getFileName()} on line {$rc->getStartLine()} */";
+
 		} elseif (is_object($var)) {
+			if (PHP_VERSION_ID >= 70000 && ($rc = new \ReflectionObject($var)) && $rc->isAnonymous()) {
+				return "/* Anonymous class defined in file {$rc->getFileName()} on line {$rc->getStartLine()} */";
+			}
 			$arr = (array) $var;
 			$space = str_repeat("\t", $level);
 			$class = get_class($var);
@@ -209,9 +227,10 @@ class Dumper
 				}
 				$out .= $space;
 			}
+			$hash = self::hash($var);
 			return $class === 'stdClass'
-				? "(object) array($out)"
-				: "$class::__set_state(array($out))";
+				? "(object) /* $hash */ array($out)"
+				: "$class::__set_state(/* $hash */ array($out))";
 
 		} elseif (is_resource($var)) {
 			return '/* resource ' . get_resource_type($var) . ' */';
@@ -224,8 +243,11 @@ class Dumper
 	}
 
 
-	/** @internal */
-	public static function dumpException(\Exception $e)
+	/**
+	 * @param  \Exception|\Throwable
+	 * @internal
+	 */
+	public static function dumpException($e)
 	{
 		$trace = $e->getTrace();
 		array_splice($trace, 0, $e instanceof \ErrorException ? 1 : 0, array(array('file' => $e->getFile(), 'line' => $e->getLine())));
@@ -254,8 +276,8 @@ class Dumper
 
 			if ((is_string($actual) && is_string($expected))) {
 				for ($i = 0; $i < strlen($actual) && isset($expected[$i]) && $actual[$i] === $expected[$i]; $i++);
-				$i = max(0, min($i, max(strlen($actual), strlen($expected)) - self::$maxLength + 3));
-				for (; $i && $i < count($actual) && $actual[$i-1] >= "\x80" && $actual[$i] >= "\x80" && $actual[$i] < "\xC0"; $i--);
+				$i = max(0, min($i, max(strlen($actual), strlen($expected)) - self::$maxLength));
+				for (; $i && $i < count($actual) && $actual[$i - 1] >= "\x80" && $actual[$i] >= "\x80" && $actual[$i] < "\xC0"; $i--);
 				if ($i) {
 					$expected = substr_replace($expected, '...', 0, $i);
 					$actual = substr_replace($actual, '...', 0, $i);
@@ -273,8 +295,8 @@ class Dumper
 				}
 			}
 			$message = strtr($message, array(
-				'%1' => self::color('yellow') . Dumper::toLine($actual) . self::color('white'),
-				'%2' => self::color('yellow') . Dumper::toLine($expected) . self::color('white'),
+				'%1' => self::color('yellow') . self::toLine($actual) . self::color('white'),
+				'%2' => self::color('yellow') . self::toLine($expected) . self::color('white'),
 			));
 		} else {
 			$message = ($e instanceof \ErrorException ? Helpers::errorTypeToString($e->getSeverity()) : get_class($e))
@@ -289,6 +311,8 @@ class Dumper
 			if ($e instanceof AssertException && $item['file'] === __DIR__ . DIRECTORY_SEPARATOR . 'Assert.php') {
 				continue;
 			}
+			$line = $item['class'] === 'Tester\Assert' && method_exists($item['class'], $item['function'])
+				&& ($tmp = file($item['file'])) && strpos($tmp = $tmp[$item['line'] - 1], "::$item[function](") ? $tmp : NULL;
 
 			$s .= 'in '
 				. ($item['file']
@@ -299,8 +323,10 @@ class Dumper
 					)
 					: '[internal function]'
 				)
-				. $item['class'] . $item['type']
-				. (isset($item['function']) ? $item['function'] . '()' : '')
+				. ($line
+					? trim($line)
+					: $item['class'] . $item['type'] . $item['function'] . ($item['function'] ? '()' : '')
+				)
 				. self::color() . "\n";
 		}
 
@@ -323,7 +349,7 @@ class Dumper
 			$path = dirname($testFile) . DIRECTORY_SEPARATOR . $path;
 		}
 		@mkdir(dirname($path)); // @ - directory may already exist
-		file_put_contents($path, is_string($content) ? $content : self::toPhp($content));
+		file_put_contents($path, is_string($content) ? $content : (self::toPhp($content) . "\n"));
 		return $path;
 	}
 
@@ -342,7 +368,8 @@ class Dumper
 			NULL => '0',
 		);
 		$c = explode('/', $color);
-		return "\033[" . $colors[$c[0]] . (empty($c[1]) ? '' : ';4' . substr($colors[$c[1]], -1))
+		return "\033["
+			. str_replace(';', "m\033[", $colors[$c[0]] . (empty($c[1]) ? '' : ';4' . substr($colors[$c[1]], -1)))
 			. 'm' . $s . ($s === NULL ? '' : "\033[0m");
 	}
 

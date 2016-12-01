@@ -16,11 +16,13 @@ class SerialForm {
         $form->addHidden('underSubSection', $underSubSection);
         
         $form->addText('name', 'Jméno:')
-                ->setRequired('Zadejte jméno');
+                ->setRequired('Zadejte jméno')
+		->setAttribute('placeholder', 'Jméno');
         
-        $form->addTextArea('description', 'Popis: ');
+        $form->addTextArea('description', 'Popis: ')
+		->setAttribute('placeholder', 'Popis');
         
-        $form->addSubmit('submit', 'Přidat');
+        $form->addSubmit('submit', 'Přidat seriál');
         
         return $form;
     }

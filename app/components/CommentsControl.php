@@ -17,7 +17,6 @@ use Nette,
         Nette\Application\UI\Form,
         Nette\Application\UI\Multiplier,
         App\Components\IRatingControlFactory,
-        App\Components\ICaptchaControlFactory,
         App\Model\CaptchaManager;
 
 

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Application\UI;
@@ -18,7 +18,6 @@ use Nette;
  * for storing their status, and responds to user command.
  *
  * @property-read Presenter $presenter
- * @property-read string $uniqueId
  */
 abstract class PresenterComponent extends Nette\ComponentModel\Container implements ISignalReceiver, IStatePersistent, \ArrayAccess
 {
@@ -127,7 +126,13 @@ abstract class PresenterComponent extends Nette\ComponentModel\Container impleme
 			if (isset($params[$name])) { // NULLs are ignored
 				$type = gettype($meta['def']);
 				if (!$reflection->convertType($params[$name], $type)) {
-					throw new Nette\Application\BadRequestException("Invalid value for persistent parameter '$name' in '{$this->getName()}', expected " . ($type === 'NULL' ? 'scalar' : $type) . ".");
+					throw new Nette\Application\BadRequestException(sprintf(
+						"Value passed to persistent parameter '%s' in %s must be %s, %s given.",
+						$name,
+						$this instanceof Presenter ? 'presenter ' . $this->getName() : "component '{$this->getUniqueId()}'",
+						$type === 'NULL' ? 'scalar' : $type,
+						is_object($params[$name]) ? get_class($params[$name]) : gettype($params[$name])
+					));
 				}
 				$this->$name = $params[$name];
 			} else {
@@ -155,7 +160,7 @@ abstract class PresenterComponent extends Nette\ComponentModel\Container impleme
 			} elseif (array_key_exists($name, $params)) { // NULLs are skipped
 				continue;
 
-			} elseif (!isset($meta['since']) || $this instanceof $meta['since']) {
+			} elseif ((!isset($meta['since']) || $this instanceof $meta['since']) && isset($this->$name)) {
 				$params[$name] = $this->$name; // object property value
 
 			} else {
@@ -164,7 +169,13 @@ abstract class PresenterComponent extends Nette\ComponentModel\Container impleme
 
 			$type = gettype($meta['def']);
 			if (!PresenterComponentReflection::convertType($params[$name], $type)) {
-				throw new InvalidLinkException(sprintf("Invalid value for persistent parameter '%s' in '%s', expected %s.", $name, $this->getName(), $type === 'NULL' ? 'scalar' : $type));
+				throw new InvalidLinkException(sprintf(
+					"Value passed to persistent parameter '%s' in %s must be %s, %s given.",
+					$name,
+					$this instanceof Presenter ? 'presenter ' . $this->getName() : "component '{$this->getUniqueId()}'",
+					$type === 'NULL' ? 'scalar' : $type,
+					is_object($params[$name]) ? get_class($params[$name]) : gettype($params[$name])
+				));
 			}
 
 			if ($params[$name] === $meta['def'] || ($meta['def'] === NULL && is_scalar($params[$name]) && (string) $params[$name] === '')) {

@@ -45,13 +45,13 @@ class ArticleForm {
     
     
     public function update($id, Nette\Bridges\ApplicationLatte\Template $template){
-        
+        			
         $form = $this->create();
         
         $form['submitArticle']->caption = 'Upravit';
-        
+                
         $values = $this->articleManager->getArticle($id);
-        
+	
         if(!$values){
             throw new Nette\Application\BadRequestException;
         }
@@ -63,15 +63,24 @@ class ArticleForm {
         }
         
         $form->addHidden('id', $id);
+	$form->addHidden('oldSerial', $values->underSerial?$values->underSerial:null);
                
+	$form['underSection']->setPrompt('Vyberte hlavní sekci');
+	$form['underSubSection']->setPrompt('Vyberte hlavní sekci');
+	$form['underSerial']->setPrompt('Vyberte hlavní sekci');
+	
         if($values->underSection){
             
             $form['underSubSection']
                     ->setItems($this->articleManager->getSubSectionList($values->underSection)+[0=>'Žádná']);
+	    
+	    $form['underSubSection']->setPrompt('Vyberte podsekci');
+	    $form['underSerial']->setPrompt('Vyberte podsekci');
             
             if($values->underSubSection){
                 $form['underSerial']
                     ->setItems($this->articleManager->getSerialList($values->underSubSection)+[0=>'Žádný']);
+		$form['underSerial']->setPrompt('Vyberte');
             }
         }
         
@@ -130,9 +139,9 @@ class ArticleForm {
         $form->addCheckbox('voteAllow', 'Povolit hlasování');
         
         $form->addUpload('photo', 'Náhledová fotka');
-        
+
         if($this->setSection){
-            
+
             $form->addSelect('underSection', 'Hlavní sekce', $this->articleManager->getMainSectionList())
                 ->setValue($this->setSection);
 
@@ -143,10 +152,10 @@ class ArticleForm {
                 
                 if($this->setSerial){
                     $form->addSelect('underSerial', 'Serial', $this->articleManager->getSerialList($this->setSubsection))
-                        ->setValue($this->setSerial);
+                        ->setValue($this->setSerial);		    
                 }
                 else{
-                    $form->addSelect('underSerial', 'Serial')
+                    $form->addSelect('underSerial', 'Serial', $this->articleManager->getSerialList($this->setSubsection))
                         ->setPrompt('Vyberte');
                     
                 }
@@ -189,7 +198,8 @@ class ArticleForm {
         }
         
         
-        $form->addSubmit('submitArticle', 'Odeslat');
+        $form->addSubmit('submitArticle', 'Odeslat')
+		->setValidationScope(false);
         
         return $form;
     }

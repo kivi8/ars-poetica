@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Latte (http://latte.nette.org)
- * Copyright (c) 2008 David Grudl (http://davidgrudl.com)
+ * This file is part of the Latte (https://latte.nette.org)
+ * Copyright (c) 2008 David Grudl (https://davidgrudl.com)
  */
 
 namespace Latte\Runtime;
@@ -21,9 +21,6 @@ use Latte;
  * @property-read int $counter
  * @property-read mixed $nextKey
  * @property-read mixed $nextValue
- * @property-read $innerIterator
- * @property   $flags
- * @property-read $cache
  * @internal
  */
 class CachingIterator extends \CachingIterator implements \Countable
@@ -199,7 +196,7 @@ class CachingIterator extends \CachingIterator implements \Countable
 			$ret = $this->$m();
 			return $ret;
 		}
-		throw new \LogicException(sprintf('Cannot read an undeclared property %s::$%s.', get_class($this), $name));
+		throw new \LogicException(sprintf('Attempt to read undeclared property %s::$%s.', get_class($this), $name));
 	}
 
 
@@ -209,7 +206,7 @@ class CachingIterator extends \CachingIterator implements \Countable
 	 */
 	public function __set($name, $value)
 	{
-		throw new \LogicException(sprintf('Cannot write to an undeclared property %s::$%s.', get_class($this), $name));
+		throw new \LogicException(sprintf('Attempt to write to undeclared property %s::$%s.', get_class($this), $name));
 	}
 
 
@@ -229,7 +226,7 @@ class CachingIterator extends \CachingIterator implements \Countable
 	 */
 	public function __unset($name)
 	{
-		throw new \LogicException(sprintf('Cannot unset the property %s::$%s.', get_class($this), $name));
+		throw new \LogicException(sprintf('Attempt to unset undeclared property %s::$%s.', get_class($this), $name));
 	}
 
 }

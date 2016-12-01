@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Reflection;
 
-use Nette,
-	Nette\Utils\ObjectMixin;
+use Nette;
+use Nette\Utils\ObjectMixin;
 
 
 /**
  * Reports information about a function.
- *
- * @author     David Grudl
  * @property-read array $defaultParameters
  * @property-read bool $closure
  * @property-read Extension $extension
@@ -37,7 +35,7 @@ use Nette,
  */
 class GlobalFunction extends \ReflectionFunction
 {
-	/** @var string|Closure */
+	/** @var string|\Closure */
 	private $value;
 
 

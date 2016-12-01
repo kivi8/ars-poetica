@@ -1,7 +1,4 @@
-- přidání fotky k článku
-- uprava uzivatele ajax
 - prehledne zobrazeni prav v admin uzivatelu
-- funguje přidání pouze jedné sekce v admin
 - Uprava od uživatele clanek
 - NewWriter ve výpisu escape všeho !!
 - Nové akce - kalendář

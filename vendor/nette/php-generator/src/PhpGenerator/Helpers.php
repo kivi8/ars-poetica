@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\PhpGenerator;
@@ -12,8 +12,6 @@ use Nette;
 
 /**
  * PHP code generator utils.
- *
- * @author     David Grudl
  */
 class Helpers
 {
@@ -37,8 +35,11 @@ class Helpers
 			return (string) $var;
 
 		} elseif (is_float($var)) {
-			$var = var_export($var, TRUE);
-			return strpos($var, '.') === FALSE ? $var . '.0' : $var;
+			if (is_finite($var)) {
+				$var = var_export($var, TRUE);
+				return strpos($var, '.') === FALSE ? $var . '.0' : $var; // workaround for PHP < 7.0.2
+			}
+			return str_replace('.0', '', var_export($var, TRUE)); // workaround for PHP 7.0.2
 
 		} elseif (is_bool($var)) {
 			return $var ? 'TRUE' : 'FALSE';
@@ -95,7 +96,13 @@ class Helpers
 			$var = serialize($var);
 			return 'unserialize(' . self::_dump($var, $level) . ')';
 
+		} elseif ($var instanceof \Closure) {
+			throw new Nette\InvalidArgumentException('Cannot dump closure.');
+
 		} elseif (is_object($var)) {
+			if (PHP_VERSION_ID >= 70000 && ($rc = new \ReflectionObject($var)) && $rc->isAnonymous()) {
+				throw new Nette\InvalidArgumentException('Cannot dump anonymous class.');
+			}
 			$arr = (array) $var;
 			$space = str_repeat("\t", $level);
 			$class = get_class($var);
@@ -114,7 +121,7 @@ class Helpers
 				}
 				foreach ($arr as $k => & $v) {
 					if (!isset($props) || isset($props[$k])) {
-						$out .= "$space\t" . self::_dump($k, $level + 1) . " => " . self::_dump($v, $level + 1) . ",\n";
+						$out .= "$space\t" . self::_dump($k, $level + 1) . ' => ' . self::_dump($v, $level + 1) . ",\n";
 					}
 				}
 				array_pop($list);
@@ -189,7 +196,7 @@ class Helpers
 	{
 		return $name instanceof PhpLiteral || !self::isIdentifier($name)
 			? '{' . self::_dump($name) . '}'
-			: $name ;
+			: $name;
 	}
 
 

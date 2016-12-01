@@ -84,6 +84,115 @@ class ArticleManager extends Manager{
                 ->fetchPairs('id', 'name');
     }
     
+    public function getSerialForSection($forSection){
+	
+	$data = [];
+	
+	foreach($this->serialDat()->where('underSection', $forSection)->fetchAll() as $key => $dat){
+	    
+	    $ao = $this->getSerialArticleOrder($dat->articleOrder);
+	    $url = $this->articleDat()->where('id', $ao[0])->fetch();
+	    
+	    if(empty($url->url)){
+		continue;
+	    }
+	    
+	    $data[$key]['url'] = $url->url;
+	    $data[$key]['name'] = $dat->name;
+	    $data[$key]['description'] = $dat->name;        
+	}
+	
+	
+	return $data;
+	
+    }
+    
+    public function getSerialForSubSection($forSubSection){
+	
+	$data = [];
+	
+	foreach($this->serialDat()->where('underSubSection', $forSubSection)->fetchAll() as $key => $dat){
+	    
+	    $ao = $this->getSerialArticleOrder($dat->articleOrder);
+	    $url = $this->articleDat()->where('id', $ao[0])->fetch();
+	    
+	    if(empty($url->url)){
+		continue;
+	    }
+	    
+	    $data[$key]['url'] = $url->url;
+	    $data[$key]['name'] = $dat->name;
+	    $data[$key]['description'] = $dat->name;        
+	}
+	
+	
+	return $data;
+	
+    }
+    
+    private function getSerialArticleOrder($articleOrder){
+	
+	return explode('|', $articleOrder);
+    }
+    
+    public function getArticlesUnderSerial($articleOrder){
+	
+	$ao = $this->getSerialArticleOrder($articleOrder);
+	
+	return $this->articleDat()->where('id', $ao)
+		->order('FIELD(id, ?)', $ao)
+		->fetchAll();
+	
+    }
+
+
+    private function changeSerialOrder($articleOrder, $articleId, $toPosition){
+	
+	$ao = $this->getSerialArticleOrder($articleOrder);
+	
+	if(count($ao) > $toPosition || !array_search($articleId, $ao)){
+	    return $ao;
+	}
+	
+	$ao[array_search($articleId, $ao)] = $ao[$toPosition];
+	
+	$ao[$toPosition] = $articleId;
+	
+	return implode('|', $ao);
+    }
+    
+    private function delArticleFromSerial($articleId, $articleOrder){
+	
+	$ao = $this->getSerialArticleOrder($articleOrder);
+	
+	$key = array_search($articleId, $ao);
+	unset($ao[$key]);
+	
+	return implode('|', $ao);
+    }
+    
+    private function addArticleToSerial($articleId, $articleOrder){	
+	
+	if($articleOrder){
+	    return $articleOrder.'|'.$articleId;
+	}
+	
+	return $articleId;
+    }
+
+    private function checkSerialInOrder($articleId, $articleOrder){
+	
+	$ao = $this->getSerialArticleOrder($articleOrder);
+	
+	foreach($ao as $article){
+	    if($article == $articleId){
+		return true;
+	    }
+	}
+	return false;
+	
+    }
+    
     /**
      * Add section to database
      * @param type $values
@@ -126,7 +235,7 @@ class ArticleManager extends Manager{
     public function updateSection($values, $subSection = 'sectionDat'){
         
         $this->$subSection()->where('id', $values->id)->update([
-            'url' => $this->checkUnique($values->name, $subSection),
+            'url' => $this->checkUnique($values->name, $subSection, true),
             'name' => $values->name,
             'description' => $values->description,
         ]);
@@ -137,14 +246,19 @@ class ArticleManager extends Manager{
      * @param id $id
      * @param string $subSection
      */
-    public function deleteSection($id, $subSection = 'sectionDat'){
+    public function deleteSection($id, $subSection = false, $serial = false){
         
-        if($subSection =='sectionDat'){
-            $this->subSectionDat()->where('underSection', $id)->delete();
-            $this->sectionDat()->where('id', $id)->delete();
+	if($serial){	    
+            $this->serialDat()->where('id', $id)->delete();
+	}	
+        elseif($subSection){
+            $this->subSectionDat()->where('id', $id)->delete();
+	    $this->serialDat()->where('underSubSection', $id)->delete();
         }
         else{
-            $this->subSectionDat()->where('id', $id)->delete();
+            $this->serialDat()->where('underSection', $id)->delete();
+	    $this->subSectionDat()->where('underSection', $id)->delete();
+            $this->sectionDat()->where('id', $id)->delete();
         }
     }
     
@@ -182,7 +296,7 @@ class ArticleManager extends Manager{
             'name' => $values->name,
             'description' => $values->description,
             'byUser' => $values->byUser,
-            'articleOrder' => $values->articleId,
+            'articleOrder' => '',
             'underSection' => $values->underSection,
             'underSubSection' => $values->underSubSection
         ])->id;
@@ -271,7 +385,7 @@ class ArticleManager extends Manager{
     
     public function getArticleNotSubsection($section){
         
-        return $this->articleDat()->where('underSection = ? AND deleted != 1 AND published = 1 AND underSubSection IS NULL', $section->id)
+        return $this->articleDat()->where('underSection = ? AND deleted != 1 AND published = 1', $section->id)
                 ->order('date DESC')
                 ->fetchAll();
     }
@@ -391,7 +505,7 @@ class ArticleManager extends Manager{
             'text' => $values->text,
             'description' => $values->description,
             'keyWords' => $values->keyWords,
-            'photo' => $photo['name'],
+            'photo' => !empty($photo)?$photo['name']:'',
             'underSection' => $values->underSection === 0?null:$values->underSection,
             'underSubSection' => $values->underSubSection === 0?null:$values->underSubSection,
             'underSerial' => $values->underSerial === 0?null:$values->underSerial,
@@ -403,8 +517,20 @@ class ArticleManager extends Manager{
             'published' => isset($values->published)?$values->published:0,
             'deleted' => 0
         ]);
+	
+	$articleId = $row->id;
+	
+	if($values->underSerial !== 0){
+	    $serDat = $this->serialDat()->where('id', $values->underSerial)->fetch();
+	    if(empty($serDat->articleOrder)){
+		$this->serialDat()->where('id', $values->underSerial)->update(['articleOrder' => $articleId]);
+	    }
+	    if($serDat->articleOrder){
+		$this->serialDat()->where('id', $values->underSerial)->update(['articleOrder' => $serDat->articleOrder.'|'.$articleId]);
+	    }
+	}
         
-        return $row->id;
+        return $articleId;
     }
     
     public function updateArticle($values){       
@@ -420,6 +546,7 @@ class ArticleManager extends Manager{
             'lastChange' => Helper::datTime(),
             'commentsAllow' => $values->commentsAllow,
             'voteAllow' => $values->voteAllow,
+	    'description' => $values->description
         ];
         
         if(!empty($values->byUser) && empty($values->byUnregUser)){
@@ -448,6 +575,24 @@ class ArticleManager extends Manager{
             }  
         
         $this->articleDat()->where('id', $values->id)->update($data);
+	
+	if($values->underSerial && $values->underSerial != $values->oldSerial){
+	    
+	    if($values->oldSerial){
+		$oldAO = $this->serialDat()->where('id', $values->oldSerial)
+		    ->fetch()->articleOrder;
+	    
+		$this->serialDat()->where('id', $values->oldSerial)
+		    ->update(['articleOrder' => $this->delArticleFromSerial($values->id, $oldAO)]);
+	    }
+	    
+	    
+	    $newAO = $this->serialDat()->where('id', $values->underSerial)
+		    ->fetch()->articleOrder;
+	    
+	    $this->serialDat()->where('id', $values->underSerial)
+		    ->update(['articleOrder' => $this->addArticleToSerial($values->id, $newAO)]);
+	}
     }
     
     /**
@@ -461,7 +606,7 @@ class ArticleManager extends Manager{
 
             $image = Image::fromFile($name['temp']); 
                        
-            $image->resize(350, 233, Image::FILL)->crop('50%', '50%', 350, 233);            
+            $image->resize(700, 466, Image::FILL)->crop('50%', '50%', 700, 466);            
             
             $image->save($www.$name['name']);  
             
@@ -510,12 +655,16 @@ class ArticleManager extends Manager{
      * @param string $title
      * @return string
      */
-    private function checkUnique($title, $database, $id = null){
+    private function checkUnique($title, $database, $id = null, $update = false){
         
         $url = Strings::webalize($title);
         
-        $dat = $this->$database()->where('url = ?', $url)->fetch();
+        $da = $this->$database()->where('url = ?', $url);
         
+	if($update && $da->count() < 2){
+	    return;
+	}
+	$dat = $da->fetch();
         if($dat){
             
             if($id == $dat->id){

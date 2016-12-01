@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use Nette,
         App\Model\ArticleManager,
+	App\Model\TextManager,
         Nette\Utils\Paginator;
 
 
@@ -14,6 +15,10 @@ class ArticlePresenter extends BasePresenter{
      
     /** @var ArticleManager @inject */
     public $articleManager;
+    
+    /** @var TextManager @inject */
+    public $textManager;
+    
     
     /**
     * @persistent
@@ -30,7 +35,7 @@ class ArticlePresenter extends BasePresenter{
         if(!$this->session->started){
             $this->session->start();
         }
-        
+        $this->template->editorial = $this->textManager->getText(TextManager::EDITORIAL);
         $get = $this->getRequest()->parameters;
             
         if(isset($get['log']) && $get['log'] == 'in' && !$this->session->started){
@@ -42,7 +47,7 @@ class ArticlePresenter extends BasePresenter{
             
             $this->paginator = new Paginator;
             $this->paginator->setItemCount($this->articleManager->countNewArticleList());
-            $this->paginator->setItemsPerPage(6);
+            $this->paginator->setItemsPerPage(8);
             
             
             $this->template->articles = $this->articleManager->getNewArticleList($this->paginator);
@@ -62,17 +67,23 @@ class ArticlePresenter extends BasePresenter{
             $this->template->section = $sectionDat;
             $this->template->subSections = $this->articleManager->getSubSectionFor($sectionDat->id);
             $this->template->articles = $this->articleManager->getArticleNotSubsection($sectionDat);
+	    $this->template->serials = $this->articleManager->getSerialForSection($sectionDat->id);
         }
         
         if($subsection){
             
             $subSectionDat = $this->articleManager->getSectionByUrl($subsection, 'subSectionDat');
-            
+	    
+            if(!$subSectionDat){
+                throw new Nette\Application\BadRequestException;
+            }
+	    
             $this->template->section = $subSectionDat;
-            $this->template->subSections = [];
-            $this->template->articles = $this->articleManager->getArticleNotSubsection($subSectionDat);
+            $this->template->subSections = null;
+            $this->template->articles = $this->articleManager->getArticleBySubSection($subSectionDat);
+	    $this->template->serials = $this->articleManager->getSerialForSubSection($subSectionDat->id);
         }
-        
+		      
     }   
     
     public function handlePage($stranka = ''){
@@ -107,8 +118,12 @@ class ArticlePresenter extends BasePresenter{
             $this->articleManager->viewForArticleUrl($url, $this->getSession());
         }
         
+        $this->template->serial = $this->articleDat->ref('underSerial');
         
-        
+	if($this->template->serial){
+	    $this->template->articleInSerial = $this->articleManager->getArticlesUnderSerial($this->template->serial->articleOrder);
+	}
+	
         $this->template->article = $this->articleDat;
     }
     

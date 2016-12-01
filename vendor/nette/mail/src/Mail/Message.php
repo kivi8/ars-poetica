@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Mail;
@@ -14,10 +14,7 @@ use Nette\Utils\Strings;
 /**
  * Mail provides functionality to compose and send both text and MIME-compliant multipart email messages.
  *
- * @property   array $from
  * @property   string $subject
- * @property   string $returnPath
- * @property   int $priority
  * @property   mixed $htmlBody
  */
 class Message extends MimePart
@@ -227,7 +224,13 @@ class Message extends MimePart
 			$cids = array();
 			$matches = Strings::matchAll(
 				$html,
-				'#(src\s*=\s*|background\s*=\s*|url\()(["\']?)(?![a-z]+:|[/\\#])([^"\')\s]+)#i',
+				'#
+					(<img[^<>]*\s src\s*=\s*
+					|<body[^<>]*\s background\s*=\s*
+					|<[^<>]+\s style\s*=\s* ["\'][^"\'>]+[:\s] url\(
+					|<style[^>]*>[^<]+ [:\s] url\()
+					(["\']?)(?![a-z]+:|[/\\#])([^"\'>)\s]+)
+				#ix',
 				PREG_OFFSET_CAPTURE
 			);
 			if ($matches && isset($bc)) {
@@ -402,6 +405,7 @@ class Message extends MimePart
 		$text = Strings::replace($html, array(
 			'#<(style|script|head).*</\\1>#Uis' => '',
 			'#<t[dh][ >]#i' => ' $0',
+			'#<a [^>]*href=(?|"([^"]+)"|\'([^\']+)\')[^>]*>(.*?)</a>#i' =>  '$2 &lt;$1&gt;',
 			'#[\r\n]+#' => ' ',
 			'#<(/?p|/?h\d|li|br|/tr)[ >/]#i' => "\n$0",
 		));

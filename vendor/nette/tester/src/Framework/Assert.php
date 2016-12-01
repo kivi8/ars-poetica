@@ -2,7 +2,7 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester;
@@ -17,26 +17,26 @@ class Assert
 	const EPSILON = 1e-10;
 
 	/** used by match(); in values, each $ followed by number is backreference */
-	static public $patterns = array(
+	public static $patterns = array(
 		'%a%' => '[^\r\n]+',    // one or more of anything except the end of line characters
-		'%a\?%'=> '[^\r\n]*',   // zero or more of anything except the end of line characters
+		'%a\?%' => '[^\r\n]*',  // zero or more of anything except the end of line characters
 		'%A%' => '.+',          // one or more of anything including the end of line characters
-		'%A\?%'=> '.*',         // zero or more of anything including the end of line characters
+		'%A\?%' => '.*',        // zero or more of anything including the end of line characters
 		'%s%' => '[\t ]+',      // one or more white space characters except the end of line characters
-		'%s\?%'=> '[\t ]*',     // zero or more white space characters except the end of line characters
+		'%s\?%' => '[\t ]*',    // zero or more white space characters except the end of line characters
 		'%S%' => '\S+',         // one or more of characters except the white space
-		'%S\?%'=> '\S*',        // zero or more of characters except the white space
+		'%S\?%' => '\S*',       // zero or more of characters except the white space
 		'%c%' => '[^\r\n]',     // a single character of any sort (except the end of line)
 		'%d%' => '[0-9]+',      // one or more digits
-		'%d\?%'=> '[0-9]*',     // zero or more digits
+		'%d\?%' => '[0-9]*',    // zero or more digits
 		'%i%' => '[+-]?[0-9]+', // signed integer value
 		'%f%' => '[+-]?\.?\d+\.?\d*(?:[Ee][+-]?\d+)?', // floating point number
 		'%h%' => '[0-9a-fA-F]+',// one or more HEX digits
-		'%ds%'=> '[\\\\/]', // directory separator
-		'%(\[.*\].*)%'=> '$1',  // range
+		'%ds%' => '[\\\\/]',    // directory separator
+		'%(\[.+\][+*?{},\d]*)%' => '$1', // range
 	);
 
-	/** @var callable  function(AssertException $exception) */
+	/** @var callable  function (AssertException $exception) */
 	public static $onFailure;
 
 	/** @var int  the count of assertions */
@@ -47,11 +47,11 @@ class Assert
 	 * Checks assertion. Values must be exactly the same.
 	 * @return void
 	 */
-	public static function same($expected, $actual)
+	public static function same($expected, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual !== $expected) {
-			self::fail('%1 should be %2', $actual, $expected);
+			self::fail(self::describe('%1 should be %2', $description), $actual, $expected);
 		}
 	}
 
@@ -60,11 +60,11 @@ class Assert
 	 * Checks assertion. Values must not be exactly the same.
 	 * @return void
 	 */
-	public static function notSame($expected, $actual)
+	public static function notSame($expected, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual === $expected) {
-			self::fail('%1 should not be %2', $actual, $expected);
+			self::fail(self::describe('%1 should not be %2', $description), $actual, $expected);
 		}
 	}
 
@@ -73,11 +73,11 @@ class Assert
 	 * Checks assertion. The identity of objects and the order of keys in the arrays are ignored.
 	 * @return void
 	 */
-	public static function equal($expected, $actual)
+	public static function equal($expected, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if (!self::isEqual($expected, $actual)) {
-			self::fail('%1 should be equal to %2', $actual, $expected);
+			self::fail(self::describe('%1 should be equal to %2', $description), $actual, $expected);
 		}
 	}
 
@@ -86,11 +86,11 @@ class Assert
 	 * Checks assertion. The identity of objects and the order of keys in the arrays are ignored.
 	 * @return void
 	 */
-	public static function notEqual($expected, $actual)
+	public static function notEqual($expected, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if (self::isEqual($expected, $actual)) {
-			self::fail('%1 should not be equal to %2', $actual, $expected);
+			self::fail(self::describe('%1 should not be equal to %2', $description), $actual, $expected);
 		}
 	}
 
@@ -99,19 +99,19 @@ class Assert
 	 * Checks assertion. Values must contains expected needle.
 	 * @return void
 	 */
-	public static function contains($needle, $actual)
+	public static function contains($needle, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if (is_array($actual)) {
 			if (!in_array($needle, $actual, TRUE)) {
-				self::fail('%1 should contain %2', $actual, $needle);
+				self::fail(self::describe('%1 should contain %2', $description), $actual, $needle);
 			}
 		} elseif (is_string($actual)) {
 			if ($needle !== '' && strpos($actual, $needle) === FALSE) {
-				self::fail('%1 should contain %2', $actual, $needle);
+				self::fail(self::describe('%1 should contain %2', $description), $actual, $needle);
 			}
 		} else {
-			self::fail('%1 should be string or array', $actual);
+			self::fail(self::describe('%1 should be string or array', $description), $actual);
 		}
 	}
 
@@ -120,19 +120,19 @@ class Assert
 	 * Checks assertion. Values must not contains expected needle.
 	 * @return void
 	 */
-	public static function notContains($needle, $actual)
+	public static function notContains($needle, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if (is_array($actual)) {
 			if (in_array($needle, $actual, TRUE)) {
-				self::fail('%1 should not contain %2', $actual, $needle);
+				self::fail(self::describe('%1 should not contain %2', $description), $actual, $needle);
 			}
 		} elseif (is_string($actual)) {
 			if ($needle === '' || strpos($actual, $needle) !== FALSE) {
-				self::fail('%1 should not contain %2', $actual, $needle);
+				self::fail(self::describe('%1 should not contain %2', $description), $actual, $needle);
 			}
 		} else {
-			self::fail('%1 should be string or array', $actual);
+			self::fail(self::describe('%1 should be string or array', $description), $actual);
 		}
 	}
 
@@ -140,13 +140,14 @@ class Assert
 	/**
 	 * Checks TRUE assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function true($actual)
+	public static function true($actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual !== TRUE) {
-			self::fail('%1 should be TRUE', $actual);
+			self::fail(self::describe('%1 should be TRUE', $description), $actual);
 		}
 	}
 
@@ -154,13 +155,14 @@ class Assert
 	/**
 	 * Checks FALSE assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function false($actual)
+	public static function false($actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual !== FALSE) {
-			self::fail('%1 should be FALSE', $actual);
+			self::fail(self::describe('%1 should be FALSE', $description), $actual);
 		}
 	}
 
@@ -168,13 +170,14 @@ class Assert
 	/**
 	 * Checks NULL assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function null($actual)
+	public static function null($actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual !== NULL) {
-			self::fail('%1 should be NULL', $actual);
+			self::fail(self::describe('%1 should be NULL', $description), $actual);
 		}
 	}
 
@@ -182,13 +185,14 @@ class Assert
 	/**
 	 * Checks Not a Number assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function nan($actual)
+	public static function nan($actual, $description = NULL)
 	{
 		self::$counter++;
 		if (!is_float($actual) || !is_nan($actual)) {
-			self::fail('%1 should be NAN', $actual);
+			self::fail(self::describe('%1 should be NAN', $description), $actual);
 		}
 	}
 
@@ -196,13 +200,14 @@ class Assert
 	/**
 	 * Checks truthy assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function truthy($actual)
+	public static function truthy($actual, $description = NULL)
 	{
 		self::$counter++;
 		if (!$actual) {
-			self::fail('%1 should be truthy', $actual);
+			self::fail(self::describe('%1 should be truthy', $description), $actual);
 		}
 	}
 
@@ -210,13 +215,14 @@ class Assert
 	/**
 	 * Checks falsey (empty) assertion.
 	 * @param  mixed  actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function falsey($actual)
+	public static function falsey($actual, $description = NULL)
 	{
 		self::$counter++;
 		if ($actual) {
-			self::fail('%1 should be falsey', $actual);
+			self::fail(self::describe('%1 should be falsey', $description), $actual);
 		}
 	}
 
@@ -225,16 +231,17 @@ class Assert
 	 * Checks if subject has expected count.
 	 * @param  int    expected count
 	 * @param  mixed  subject
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function count($count, $value)
+	public static function count($count, $value, $description = NULL)
 	{
 		self::$counter++;
 		if (!$value instanceof \Countable && !is_array($value)) {
-			self::fail('%1 should be array or countable object', $value);
+			self::fail(self::describe('%1 should be array or countable object', $description), $value);
 
 		} elseif (count($value) !== $count) {
-			self::fail('Count %1 should be %2', count($value), $count);
+			self::fail(self::describe('Count %1 should be %2', $description), count($value), $count);
 		}
 	}
 
@@ -243,7 +250,7 @@ class Assert
 	 * Checks assertion.
 	 * @return void
 	 */
-	public static function type($type, $value)
+	public static function type($type, $value, $description = NULL)
 	{
 		self::$counter++;
 		if (!is_object($type) && !is_string($type)) {
@@ -251,19 +258,19 @@ class Assert
 
 		} elseif ($type === 'list') {
 			if (!is_array($value) || ($value && array_keys($value) !== range(0, count($value) - 1))) {
-				self::fail("%1 should be $type", $value);
+				self::fail(self::describe("%1 should be $type", $description), $value);
 			}
 
 		} elseif (in_array($type, array('array', 'bool', 'callable', 'float',
 			'int', 'integer', 'null', 'object', 'resource', 'scalar', 'string'), TRUE)
 		) {
 			if (!call_user_func("is_$type", $value)) {
-				self::fail(gettype($value) . " should be $type");
+				self::fail(self::describe(gettype($value) . " should be $type", $description));
 			}
 
 		} elseif (!$value instanceof $type) {
 			$actual = is_object($value) ? get_class($value) : gettype($value);
-			self::fail("$actual should be instance of $type");
+			self::fail(self::describe("$actual should be instance of $type", $description));
 		}
 	}
 
@@ -273,7 +280,7 @@ class Assert
 	 * @param  callable
 	 * @param  string class
 	 * @param  string message
-	 * @param  integer code
+	 * @param  int code
 	 * @return \Exception
 	 */
 	public static function exception($function, $class, $message = NULL, $code = NULL)
@@ -282,6 +289,7 @@ class Assert
 		$e = NULL;
 		try {
 			call_user_func($function);
+		} catch (\Throwable $e) {
 		} catch (\Exception $e) {
 		}
 		if ($e === NULL) {
@@ -336,7 +344,7 @@ class Assert
 			}
 		}
 
-		set_error_handler(function($severity, $message, $file, $line) use (& $expected) {
+		set_error_handler(function ($severity, $message, $file, $line) use (& $expected) {
 			if (($severity & error_reporting()) !== $severity) {
 				return;
 			}
@@ -344,26 +352,39 @@ class Assert
 			$errorStr = Helpers::errorTypeToString($severity) . ($message ? " ($message)" : '');
 			list($expectedType, $expectedMessage, $expectedTypeStr) = array_shift($expected);
 			if ($expectedType === NULL) {
-				restore_error_handler();
 				Assert::fail("Generated more errors than expected: $errorStr was generated in file $file on line $line");
 
 			} elseif ($severity !== $expectedType) {
-				restore_error_handler();
 				Assert::fail("$expectedTypeStr was expected, but $errorStr was generated in file $file on line $line");
 
 			} elseif ($expectedMessage && !Assert::isMatching($expectedMessage, $message)) {
-				restore_error_handler();
 				Assert::fail("$expectedTypeStr with a message matching %2 was expected but got %1", $message, $expectedMessage);
 			}
 		});
 
 		reset($expected);
-		call_user_func($function);
-		restore_error_handler();
+		try {
+			call_user_func($function);
+			restore_error_handler();
+		} catch (\Exception $e) {
+			restore_error_handler();
+			throw $e;
+		}
 
 		if ($expected) {
 			self::fail('Error was expected, but was not generated');
 		}
+	}
+
+
+	/**
+	 * Checks that the function does not generate PHP error and does not throw exception.
+	 * @param  callable
+	 * @return void
+	 */
+	public static function noError($function)
+	{
+		self::error($function, array());
 	}
 
 
@@ -384,17 +405,18 @@ class Assert
 	 *   %f%    floating point number
 	 *   %h%    one or more HEX digits
 	 * @param  string  mask|regexp; only delimiters ~ and # are supported for regexp
-	 * @param  string
+	 * @param  string actual
+	 * @param  string  fail message
 	 * @return void
 	 */
-	public static function match($pattern, $actual)
+	public static function match($pattern, $actual, $description = NULL)
 	{
 		self::$counter++;
 		if (!is_string($pattern)) {
 			throw new \Exception('Pattern must be a string.');
 
 		} elseif (!is_scalar($actual) || !self::isMatching($pattern, $actual)) {
-			self::fail('%1 should match %2', $actual, rtrim($pattern));
+			self::fail(self::describe('%1 should match %2', $description), $actual, rtrim($pattern));
 		}
 	}
 
@@ -403,15 +425,15 @@ class Assert
 	 * Compares results using mask sorted in file.
 	 * @return void
 	 */
-	public static function matchFile($file, $actual)
+	public static function matchFile($file, $actual, $description = NULL)
 	{
 		self::$counter++;
-		$pattern = @file_get_contents($file);
+		$pattern = @file_get_contents($file); // @ is escalated to exception
 		if ($pattern === FALSE) {
 			throw new \Exception("Unable to read file '$file'.");
 
 		} elseif (!is_scalar($actual) || !self::isMatching($pattern, $actual)) {
-			self::fail('%1 should match %2', $actual, rtrim($pattern));
+			self::fail(self::describe('%1 should match %2', $description), $actual, rtrim($pattern));
 		}
 	}
 
@@ -428,6 +450,12 @@ class Assert
 		} else {
 			throw $e;
 		}
+	}
+
+
+	private static function describe($reason, $description)
+	{
+		return ($description ? $description . ': ' : '') . $reason;
 	}
 
 
@@ -459,7 +487,7 @@ class Assert
 				'[.\\\\+*?[^$(){|\x00\#]' => '\$0', // preg quoting
 				'[\t ]*\r?\n' => "[\\t ]*\n", // right trim
 			);
-			$pattern = '#^' . preg_replace_callback('#' . implode('|', array_keys($patterns)) . '#U' . $utf8, function($m) use ($patterns) {
+			$pattern = '#^' . preg_replace_callback('#' . implode('|', array_keys($patterns)) . '#U' . $utf8, function ($m) use ($patterns) {
 				foreach ($patterns as $re => $replacement) {
 					$s = preg_replace("#^$re\\z#", str_replace('\\', '\\\\', $replacement), $m[0], 1, $count);
 					if ($count) {
@@ -525,40 +553,6 @@ class Assert
 		}
 
 		return $expected === $actual;
-	}
-
-}
-
-
-/**
- * Assertion exception.
- */
-class AssertException extends \Exception
-{
-	public $origMessage;
-
-	public $actual;
-
-	public $expected;
-
-
-	public function __construct($message, $expected, $actual)
-	{
-		parent::__construct();
-		$this->expected = $expected;
-		$this->actual = $actual;
-		$this->setMessage($message);
-	}
-
-
-	public function setMessage($message)
-	{
-		$this->origMessage = $message;
-		$this->message = strtr($message, array(
-			'%1' => Dumper::toLine($this->actual),
-			'%2' => Dumper::toLine($this->expected),
-		));
-		return $this;
 	}
 
 }

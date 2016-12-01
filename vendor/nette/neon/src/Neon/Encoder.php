@@ -1,19 +1,15 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Neon;
 
-use Nette;
-
 
 /**
  * Simple generator for Nette Object Notation.
- *
- * @author     David Grudl
  */
 class Encoder
 {
@@ -28,16 +24,20 @@ class Encoder
 	 */
 	public function encode($var, $options = NULL)
 	{
-		if ($var instanceof \DateTime) {
+		if ($var instanceof \DateTimeInterface) {
 			return $var->format('Y-m-d H:i:s O');
 
 		} elseif ($var instanceof Entity) {
+			if ($var->value === Neon::CHAIN) {
+				return implode('', array_map([$this, 'encode'], $var->attributes));
+			}
 			return $this->encode($var->value) . '('
 				. (is_array($var->attributes) ? substr($this->encode($var->attributes), 1, -1) : '') . ')';
 		}
 
 		if (is_object($var)) {
-			$obj = $var; $var = array();
+			$obj = $var;
+			$var = [];
 			foreach ($obj as $k => $v) {
 				$var[$k] = $v;
 			}
@@ -68,7 +68,7 @@ class Encoder
 
 		} elseif (is_string($var) && !is_numeric($var)
 			&& !preg_match('~[\x00-\x1F]|^\d{4}|^(true|false|yes|no|on|off|null)\z~i', $var)
-			&& preg_match('~^' . Decoder::$patterns[1] . '\z~x', $var) // 1 = literals
+			&& preg_match('~^' . Decoder::PATTERNS[1] . '\z~x', $var) // 1 = literals
 		) {
 			return $var;
 
@@ -77,7 +77,7 @@ class Encoder
 			return strpos($var, '.') === FALSE ? $var . '.0' : $var;
 
 		} else {
-			return json_encode($var, PHP_VERSION_ID >= 50400 ? JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES : 0);
+			return json_encode($var, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 		}
 	}
 

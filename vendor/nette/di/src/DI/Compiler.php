@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\DI;
 
-use Nette,
-	Nette\Utils\Validators;
+use Nette;
+use Nette\Utils\Validators;
 
 
 /**
  * DI container compiler.
- *
- * @author     David Grudl
  */
 class Compiler extends Nette\Object
 {
@@ -29,6 +27,9 @@ class Compiler extends Nette\Object
 
 	/** @var string[] of file names */
 	private $dependencies = array();
+
+	/** @var string */
+	private $className;
 
 	/** @var array reserved section names */
 	private static $reserved = array('services' => 1, 'parameters' => 1);
@@ -60,7 +61,7 @@ class Compiler extends Nette\Object
 	public function getExtensions($type = NULL)
 	{
 		return $type
-			? array_filter($this->extensions, function($item) use ($type) { return $item instanceof $type; })
+			? array_filter($this->extensions, function ($item) use ($type) { return $item instanceof $type; })
 			: $this->extensions;
 	}
 
@@ -71,6 +72,16 @@ class Compiler extends Nette\Object
 	public function getContainerBuilder()
 	{
 		return $this->builder;
+	}
+
+
+	/**
+	 * @return self
+	 */
+	public function setClassName($className)
+	{
+		$this->className = $className;
+		return $this;
 	}
 
 
@@ -130,7 +141,7 @@ class Compiler extends Nette\Object
 
 
 	/**
-	 * @return Nette\PhpGenerator\ClassType[]
+	 * @return Nette\PhpGenerator\ClassType[]|string
 	 */
 	public function compile(array $config = NULL, $className = NULL, $parentName = NULL)
 	{
@@ -138,7 +149,7 @@ class Compiler extends Nette\Object
 		$this->processParameters();
 		$this->processExtensions();
 		$this->processServices();
-		$classes = $this->generateCode($className, $parentName);
+		$classes = $this->generateCode($className ?: $this->className, $parentName);
 		return func_num_args()
 			? implode("\n\n\n", $classes) // back compatiblity
 			: $classes;
@@ -157,9 +168,6 @@ class Compiler extends Nette\Object
 	/** @internal */
 	public function processExtensions()
 	{
-		$last = $this->getExtensions('Nette\DI\Extensions\InjectExtension');
-		$this->extensions = array_merge(array_diff_key($this->extensions, $last), $last);
-
 		$this->config = Helpers::expand(array_diff_key($this->config, self::$reserved), $this->builder->parameters)
 			+ array_intersect_key($this->config, self::$reserved);
 
@@ -167,6 +175,9 @@ class Compiler extends Nette\Object
 			$extension->setConfig(isset($this->config[$name]) ? $this->config[$name] : array());
 			$extension->loadConfiguration();
 		}
+
+		$last = $this->getExtensions('Nette\DI\Extensions\InjectExtension');
+		$this->extensions = array_merge(array_diff_key($this->extensions, $last), $last);
 
 		$extensions = array_diff_key($this->extensions, $first);
 		foreach (array_intersect_key($extensions, $this->config) as $name => $extension) {
@@ -184,9 +195,12 @@ class Compiler extends Nette\Object
 			$extra = implode("', '", array_keys($extra));
 			throw new Nette\DeprecatedException("Extensions '$extra' were added while container was being compiled.");
 
-		} elseif ($extra = array_diff_key($this->config, self::$reserved, $this->extensions)) {
-			$extra = implode("', '", array_keys($extra));
-			throw new Nette\InvalidStateException("Found sections '$extra' in configuration, but corresponding extensions are missing.");
+		} elseif ($extra = key(array_diff_key($this->config, self::$reserved, $this->extensions))) {
+			$hint = Nette\Utils\ObjectMixin::getSuggestion(array_keys(self::$reserved + $this->extensions), $extra);
+			throw new Nette\InvalidStateException(
+				"Found section '$extra' in configuration, but corresponding extension is missing"
+				. ($hint ? ", did you mean '$hint'?" : '.')
+			);
 		}
 	}
 
@@ -202,11 +216,16 @@ class Compiler extends Nette\Object
 	public function generateCode($className, $parentName = NULL)
 	{
 		$this->builder->prepareClassList();
+		$state = serialize($this->builder->getDefinitions());
 
 		foreach ($this->extensions as $extension) {
 			$extension->beforeCompile();
 			$rc = new \ReflectionClass($extension);
 			$this->dependencies[] = $rc->getFileName();
+			if ($state !== serialize($this->builder->getDefinitions())) {
+				$this->builder->prepareClassList();
+				$state = serialize($this->builder->getDefinitions());
+			}
 		}
 
 		$classes = $this->builder->generateClasses($className, $parentName);
@@ -254,6 +273,11 @@ class Compiler extends Nette\Object
 				$name = (count($builder->getDefinitions()) + 1) . preg_replace('#\W+#', '_', $postfix);
 			} else {
 				$name = ($namespace ? $namespace . '.' : '') . strtr($origName, '\\', '_');
+			}
+
+			if ($def === FALSE) {
+				$builder->removeDefinition($name);
+				continue;
 			}
 
 			$params = $builder->parameters;

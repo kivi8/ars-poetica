@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Mail;
@@ -114,9 +114,9 @@ class SmtpMailer extends Nette\Object implements IMailer
 	 */
 	protected function connect()
 	{
-		$this->connection = @fsockopen( // intentionally @
-			($this->secure === 'ssl' ? 'ssl://' : '') . $this->host,
-			$this->port, $errno, $error, $this->timeout
+		$this->connection = @stream_socket_client( // @ is escalated to exception
+			($this->secure === 'ssl' ? 'ssl://' : '') . $this->host . ':' . $this->port,
+			$errno, $error, $this->timeout
 		);
 		if (!$this->connection) {
 			throw new SmtpException($error, $errno);

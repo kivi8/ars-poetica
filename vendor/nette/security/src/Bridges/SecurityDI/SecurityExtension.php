@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\SecurityDI;
@@ -12,8 +12,6 @@ use Nette;
 
 /**
  * Security extension for Nette DI.
- *
- * @author     David Grudl
  */
 class SecurityExtension extends Nette\DI\CompilerExtension
 {
@@ -48,7 +46,7 @@ class SecurityExtension extends Nette\DI\CompilerExtension
 
 		if ($this->debugMode && $config['debugger']) {
 			$user->addSetup('@Tracy\Bar::addPanel', array(
-				new Nette\DI\Statement('Nette\Bridges\SecurityTracy\UserPanel')
+				new Nette\DI\Statement('Nette\Bridges\SecurityTracy\UserPanel'),
 			));
 		}
 

@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Reflection;
 
-use Nette,
-	Nette\Utils\ObjectMixin;
+use Nette;
+use Nette\Utils\ObjectMixin;
 
 
 /**
  * Reports information about a method.
- *
- * @author     David Grudl
  * @property-read array $defaultParameters
  * @property-read ClassType $declaringClass
  * @property-read Method $prototype
@@ -54,7 +52,7 @@ class Method extends \ReflectionMethod
 	/**
 	 * @param  string|object
 	 * @param  string
-	 * @return Method
+	 * @return self
 	 */
 	public static function from($class, $method)
 	{
@@ -98,12 +96,12 @@ class Method extends \ReflectionMethod
 
 
 	/**
-	 * @return Method
+	 * @return self
 	 */
 	public function getPrototype()
 	{
 		$prototype = parent::getPrototype();
-		return new Method($prototype->getDeclaringClass()->getName(), $prototype->getName());
+		return new static($prototype->getDeclaringClass()->getName(), $prototype->getName());
 	}
 
 

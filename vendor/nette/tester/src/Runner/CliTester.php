@@ -2,14 +2,15 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester\Runner;
 
-use Tester\CodeCoverage,
-	Tester\Environment,
-	Tester\Helpers;
+use Tester\CodeCoverage;
+use Tester\Environment;
+use Tester\Helpers;
+use Tester\Dumper;
 
 
 /**
@@ -86,7 +87,7 @@ class CliTester
 		echo <<<'XX'
  _____ ___  ___ _____ ___  ___
 |_   _/ __)( __/_   _/ __)| _ )
-  |_| \___ /___) |_| \___ |_|_\  v1.4.0
+  |_| \___ /___) |_| \___ |_|_\  v1.7.1
 
 
 XX;
@@ -148,12 +149,16 @@ XX
 			echo "Note: No php.ini is used.\n";
 		}
 
+		if (in_array($this->options['-o'], array('tap', 'junit'))) {
+			$args .= ' -d html_errors=off';
+		}
+
 		foreach ($this->options['-d'] as $item) {
 			$args .= ' -d ' . Helpers::escapeArg($item);
 		}
 
 		// Is the executable Zend PHP or HHVM?
-		$proc = @proc_open(
+		$proc = @proc_open( // @ is escalated to exception
 			$this->options['-p'] . ' --version',
 			array(array('pipe', 'r'), array('pipe', 'w'), array('pipe', 'w')),
 			$pipes,
@@ -161,6 +166,9 @@ XX
 			NULL,
 			array('bypass_shell' => TRUE)
 		);
+		if ($proc === FALSE) {
+			throw new \Exception('Cannot run PHP interpreter ' . $this->options['-p'] . '. Use -p option.');
+		}
 		$output = stream_get_contents($pipes[1]);
 		$error = stream_get_contents($pipes[2]);
 		if (proc_close($proc)) {
@@ -169,8 +177,17 @@ XX
 
 		if (preg_match('#HipHop VM#', $output)) {
 			$this->interpreter = new HhvmPhpInterpreter($this->options['-p'], $args);
+		} elseif (strpos($output, 'phpdbg') !== FALSE) {
+			$this->interpreter = new ZendPhpDbgInterpreter($this->options['-p'], $args);
 		} else {
 			$this->interpreter = new ZendPhpInterpreter($this->options['-p'], $args);
+		}
+
+		if ($this->interpreter->getErrorOutput()) {
+			echo Dumper::color('red', 'PHP startup error: ' . $this->interpreter->getErrorOutput()) . "\n";
+			if ($this->interpreter->isCgi()) {
+				echo "(note that PHP CLI generates better error messages)\n";
+			}
 		}
 	}
 
@@ -202,7 +219,7 @@ XX
 		}
 
 		if ($this->options['--setup']) {
-			call_user_func(function() use ($runner) {
+			call_user_func(function () use ($runner) {
 				require func_get_arg(0);
 			}, $this->options['--setup']);
 		}
@@ -214,7 +231,8 @@ XX
 	private function prepareCodeCoverage()
 	{
 		if (!$this->interpreter->hasXdebug()) {
-			throw new \Exception("Code coverage functionality requires Xdebug extension (used {$this->interpreter->getCommandLine()})");
+			$alternative = PHP_VERSION_ID >= 70000 ? ' or phpdbg SAPI' : '';
+			throw new \Exception("Code coverage functionality requires Xdebug extension$alternative (used {$this->interpreter->getCommandLine()})");
 		}
 		file_put_contents($this->options['--coverage'], '');
 		$file = realpath($this->options['--coverage']);
@@ -259,7 +277,7 @@ XX
 				$prev = $state;
 				$runner->run();
 			}
-			echo "Watching " . implode(', ', $this->options['--watch']) . " " . str_repeat('.', ++$counter % 5) . "    \r";
+			echo 'Watching ' . implode(', ', $this->options['--watch']) . ' ' . str_repeat('.', ++$counter % 5) . "    \r";
 			sleep(2);
 		}
 	}

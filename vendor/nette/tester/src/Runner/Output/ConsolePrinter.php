@@ -2,14 +2,14 @@
 
 /**
  * This file is part of the Nette Tester.
- * Copyright (c) 2009 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2009 David Grudl (https://davidgrudl.com)
  */
 
 namespace Tester\Runner\Output;
 
-use Tester,
-	Tester\Dumper,
-	Tester\Runner\Runner;
+use Tester;
+use Tester\Dumper;
+use Tester\Runner\Runner;
 
 
 /**

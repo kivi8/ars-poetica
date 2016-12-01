@@ -1,12 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- *
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
- *
- * For the full copyright and license information, please view
- * the file license.txt that was distributed with this source code.
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\ApplicationLatte;
@@ -87,6 +83,12 @@ class TemplateFactory extends Nette\Object implements UI\ITemplateFactory
 		$latte->addFilter('modifyDate', function ($time, $delta, $unit = NULL) {
 			return $time == NULL ? NULL : Nette\Utils\DateTime::from($time)->modify($delta . $unit); // intentionally ==
 		});
+
+		if (!array_key_exists('translate', $latte->getFilters())) {
+			$latte->addFilter('translate', function () {
+				throw new Nette\InvalidStateException('Translator has not been set. Set translator using $template->setTranslator().');
+			});
+		}
 
 		// default parameters
 		$template->control = $template->_control = $control;

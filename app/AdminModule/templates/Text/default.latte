@@ -1,0 +1,28 @@
+{define title}Úprava textu na stránkách{/define}
+{block content}
+
+{foreach $texts as $id=>$text}
+    <h2>{$text->name}</h2>
+    {form updateText-$id}
+	{input text}
+	{input id}
+	{input submit}
+    {/form}
+{/foreach}
+
+{define script}
+<script src="{$basePath}/js/vendor/codepress/codepress.js" type="text/javascript"></script>
+<script>
+    $("form").submit(function(){
+	
+	switch($(this).attr('class')){
+	    case "text1": text1.toggleEditor(); break;
+	    case "text2": text2.toggleEditor(); break;
+	    case "text3": text1.toggleEditor(); break;
+	    case "text4": text1.toggleEditor(); break;
+	    case "text5": text1.toggleEditor(); break;
+	}
+
+    });
+</script>
+{/define}

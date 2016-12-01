@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Reflection;
 
-use Nette,
-	Nette\Utils\ObjectMixin;
+use Nette;
+use Nette\Utils\ObjectMixin;
 
 
 /**
  * Reports information about a class.
- *
- * @author     David Grudl
  * @property-read Method $constructor
  * @property-read Extension $extension
  * @property-read ClassType[] $interfaces
@@ -50,7 +48,7 @@ class ClassType extends \ReflectionClass
 
 	/**
 	 * @param  string|object
-	 * @return ClassType
+	 * @return self
 	 */
 	public static function from($class)
 	{
@@ -96,7 +94,7 @@ class ClassType extends \ReflectionClass
 
 
 	/**
-	 * @return ClassType[]
+	 * @return self[]
 	 */
 	public function getInterfaces()
 	{
@@ -130,7 +128,7 @@ class ClassType extends \ReflectionClass
 
 
 	/**
-	 * @return ClassType|NULL
+	 * @return self|NULL
 	 */
 	public function getParentClass()
 	{

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Utils;
@@ -20,8 +20,6 @@ use Nette;
  *
  * echo $el->startTag(), $el->endTag();
  * </code>
- *
- * @author     David Grudl
  */
 class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAggregate, IHtmlString
 {
@@ -313,7 +311,30 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 	 */
 	public function add($child)
 	{
+		return $this->addHtml($child);
+	}
+
+
+	/**
+	 * Adds new element's child.
+	 * @param  Html|string Html node or raw HTML string
+	 * @return self
+	 */
+	public function addHtml($child)
+	{
 		return $this->insert(NULL, $child);
+	}
+
+
+	/**
+	 * Appends plain-text string to element content.
+	 * @param  string plain-text string
+	 * @return self
+	 */
+	public function addText($text)
+	{
+		$text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+		return $this->insert(NULL, $text);
 	}
 
 
@@ -332,7 +353,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 	/**
 	 * Inserts child node.
-	 * @param  int|NULL position of NULL for appending
+	 * @param  int|NULL position or NULL for appending
 	 * @param  Html|string Html node or raw HTML string
 	 * @param  bool
 	 * @return self
@@ -340,7 +361,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 	 */
 	public function insert($index, $child, $replace = FALSE)
 	{
-		if ($child instanceof Html || is_scalar($child)) {
+		if ($child instanceof self || is_scalar($child)) {
 			if ($index === NULL) { // append
 				$this->children[] = $child;
 
@@ -358,7 +379,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 	/**
 	 * Inserts (replaces) child node (\ArrayAccess implementation).
-	 * @param  int|NULL position of NULL for appending
+	 * @param  int|NULL position or NULL for appending
 	 * @param  Html|string Html node or raw HTML string
 	 * @return void
 	 */
@@ -414,7 +435,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 
 	/**
-	 * Removed all children.
+	 * Removes all children.
 	 * @return void
 	 */
 	public function removeChildren()
@@ -424,7 +445,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 
 	/**
-	 * Iterates over a elements.
+	 * Iterates over elements.
 	 * @return \ArrayIterator
 	 */
 	public function getIterator()
@@ -434,7 +455,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 
 	/**
-	 * Returns all of children.
+	 * Returns all children.
 	 * @return array
 	 */
 	public function getChildren()
@@ -478,7 +499,12 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 
 	public function __toString()
 	{
-		return $this->render();
+		try {
+			return $this->render();
+		} catch (\Throwable $e) {
+		} catch (\Exception $e) {
+		}
+		trigger_error("Exception in " . __METHOD__ . "(): {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", E_USER_ERROR);
 	}
 
 
@@ -519,7 +545,15 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 		}
 
 		$s = '';
-		foreach ($this->attrs as $key => $value) {
+		$attrs = $this->attrs;
+		if (isset($attrs['data']) && is_array($attrs['data'])) { // deprecated
+			foreach ($attrs['data'] as $key => $value) {
+				$attrs['data-' . $key] = $value;
+			}
+			unset($attrs['data']);
+		}
+
+		foreach ($attrs as $key => $value) {
 			if ($value === NULL || $value === FALSE) {
 				continue;
 
@@ -532,22 +566,7 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 				continue;
 
 			} elseif (is_array($value)) {
-				if ($key === 'data') { // deprecated
-					foreach ($value as $k => $v) {
-						if ($v !== NULL && $v !== FALSE) {
-							if (is_array($v)) {
-								$v = Json::encode($v);
-							}
-							$q = strpos($v, '"') === FALSE ? '"' : "'";
-							$s .= ' data-' . $k . '='
-								. $q . str_replace(array('&', $q), array('&amp;', $q === '"' ? '&quot;' : '&#39;'), $v)
-								. (strpos($v, '`') !== FALSE && strpbrk($v, ' <>"\'') === FALSE ? ' ' : '')
-								. $q;
-						}
-					}
-					continue;
-
-				} elseif (strncmp($key, 'data-', 5) === 0) {
+				if (strncmp($key, 'data-', 5) === 0) {
 					$value = Json::encode($value);
 
 				} else {
@@ -573,8 +592,12 @@ class Html extends Nette\Object implements \ArrayAccess, \Countable, \IteratorAg
 			}
 
 			$q = strpos($value, '"') === FALSE ? '"' : "'";
-			$s .= ' ' . $key . '='
-				. $q . str_replace(array('&', $q), array('&amp;', $q === '"' ? '&quot;' : '&#39;'), $value)
+			$s .= ' ' . $key . '=' . $q
+				. str_replace(
+					array('&', $q, '<'),
+					array('&amp;', $q === '"' ? '&quot;' : '&#39;', self::$xhtml ? '&lt;' : '<'),
+					$value
+				)
 				. (strpos($value, '`') !== FALSE && strpbrk($value, ' <>"\'') === FALSE ? ' ' : '')
 				. $q;
 		}

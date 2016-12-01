@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This file is part of the Nette Framework (http://nette.org)
- * Copyright (c) 2004 David Grudl (http://davidgrudl.com)
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
 namespace Nette\Bridges\ApplicationDI;
@@ -16,7 +16,7 @@ use Nette;
 class RoutingExtension extends Nette\DI\CompilerExtension
 {
 	public $defaults = array(
-		'debugger' => TRUE,
+		'debugger' => NULL,
 		'routes' => array(), // of [mask => action]
 		'cache' => FALSE,
 	);
@@ -27,6 +27,7 @@ class RoutingExtension extends Nette\DI\CompilerExtension
 
 	public function __construct($debugMode = FALSE)
 	{
+		$this->defaults['debugger'] = interface_exists('Tracy\IBarPanel');
 		$this->debugMode = $debugMode;
 	}
 
@@ -67,11 +68,17 @@ class RoutingExtension extends Nette\DI\CompilerExtension
 		if (!empty($this->config['cache'])) {
 			$method = $class->getMethod(Nette\DI\Container::getMethodName($this->prefix('router')));
 			try {
-				$router = serialize(eval($method->getBody()));
+				$router = eval($method->getBody());
+				if ($router instanceof Nette\Application\Routers\RouteList) {
+					$router->warmupCache();
+				}
+				$s = serialize($router);
+			} catch (\Throwable $e) {
+				throw new Nette\DI\ServiceCreationException('Unable to cache router due to error: ' . $e->getMessage(), 0, $e);
 			} catch (\Exception $e) {
 				throw new Nette\DI\ServiceCreationException('Unable to cache router due to error: ' . $e->getMessage(), 0, $e);
 			}
-			$method->setBody('return unserialize(?);', array($router));
+			$method->setBody('return unserialize(?);', array($s));
 		}
 	}
 

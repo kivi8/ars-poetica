@@ -25,6 +25,7 @@ services:
 	- App\Model\NewsManager
 	- App\Model\RatingManager
 	- App\Model\CommentsManager
+	- App\Model\TextManager
 	- App\Authorization\ResourceAuthorizator
 	- App\Forms\LogFormFactory
 	- App\Forms\LostPassForm

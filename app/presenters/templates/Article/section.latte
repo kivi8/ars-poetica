@@ -14,20 +14,32 @@
       {$section->name}     
   </li>
 </ol>
-      
-<div class="section-description">
-    {$section->description}
+  
+<div class="section-description" n:if="$section->description">
+    <span class="article-description">{$section->description}<span>
 </div>    
 
+<div class="list-group categories col-md-6" n:if="$subSections && $subSections->fetch()">
+    <h4 style="text-align: left;">Podsekce:</h4>
+    <a class="list-group-item" n:foreach="$subSections as $subSection" n:href="Article:default, $section->url ,$subSection->url">{$subSection->name}</a>
+</div>  
+
+
+<div class="serial col-md-6" n:if="!empty($serials)">
+    <h4>Seriály:</h4>
+    <ul>
+	<li n:foreach="$serials as $serial">
+	    <a n:href="Article:article#serial $serial['url']">{$serial['name']}</a>
+	</li>
+    </ul>
+</div>  
+
+<div class="clearfix"></div>
+    
 {foreach $articles as $article}
     {include 'article-view.latte', 'article'=>$article}
 {/foreach}
 
-{foreach $subSections as $subSection}
-    <a n:href="Article:default, $section->url ,$subSection->url">{$subSection->name}</a>
-    
-    
-{/foreach}
 
 {define right-column}
     <div class="admin-functions" n:if="$user->isAllowed('Article', 'add')">

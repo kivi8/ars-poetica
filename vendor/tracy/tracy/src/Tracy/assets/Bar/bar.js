@@ -1,5 +1,5 @@
 /**
- * This file is part of the Tracy (http://tracy.nette.org)
+ * This file is part of the Tracy (https://tracy.nette.org)
  */
 
 (function(){
@@ -145,6 +145,12 @@
 		win.Tracy.Dumper.init();
 		if (this.elem.querySelector('h1')) {
 			doc.title = this.elem.querySelector('h1').innerHTML;
+		}
+
+		for (var i = 0, scripts = doc.body.getElementsByTagName('script'); i < scripts.length; i++) {
+			(win.execScript || function(data) {
+				win['eval'].call(win, data);
+			})(scripts[i].innerHTML);
 		}
 
 		var _this = this;
@@ -338,6 +344,9 @@
 		options = options || {};
 
 		var onmousemove = function(e) {
+			if (e.buttons === 0) {
+				return onmouseup(e);
+			}
 			if (!started) {
 				if (options.draggedClass) {
 					elem.classList.add(options.draggedClass);
