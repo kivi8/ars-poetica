@@ -66,3 +66,29 @@ function slideSwitch() {
 $(function() {
     setInterval( "slideSwitch()", 5000 );
 });
+
+
+var loadingFinished = true;
+
+$.nette.ext({
+    complete: function(jqXHR, settings) {
+        if (!loadingFinished) {
+            loadingFinished = true;
+        }
+    }
+});
+
+if ($("a.load-more-posts.ajax").length) {
+    window.setInterval(function() {
+        var offset = 250;
+        var $footer = $(".load-more-posts-placeholder");
+
+        var docViewBottom = $(window).scrollTop() + $(window).height();
+        var elemTop = $footer.offset().top;
+
+        if ((docViewBottom + offset) > elemTop && loadingFinished) {
+            loadingFinished = false;
+            $("a.load-more-posts.ajax").click();
+        }
+    }, 500);
+}

@@ -3,41 +3,27 @@
 {ifset $customFlashMessage}
     <div class="flash">{$customFlashMessage}</div>
 {/ifset}
+{snippet articles}
 
+<div class="scroll-inf">
 {if $articles}
      
     {foreach $articles as $article}
-        {include 'article-view.latte', 'article'=>$article}
+        {include 'article-view.latte', 'article'=>$article, 'first' => $iterator->first?}
     {/foreach}      
     
     {else}
         <span class="warning">Žádné články</span>
     {/if}    
+    
+</div>
 
 <div class="clearfix"></div>
 
 {if $presenter->paginator->getLastPage() > 1}
     {var pagePlus = $presenter->stranka?$presenter->stranka+1:2}
-    {var pageMinus = $presenter->stranka?$presenter->stranka-1:0}
     
-    <a n:if="$pageMinus>=$presenter->paginator->getFirstPage()" n:href="Page! $pageMinus"><< Novější články</a>
-    <a n:if="$pagePlus<=$presenter->paginator->getLastPage()" n:href="Page! $pagePlus">Starší články >></a>   
+    <a class="ajax" n:if="$pagePlus<=$presenter->paginator->getLastPage()" n:href="Page! $pagePlus">Starší články >></a>
     
 {/if}
-{define right-column}
-
-
-<h2>EDITORIAL</h2>
-
-<h4 style="font-size: 16px; font-weight: bold;">Vítejte na stránkách Ars Poetica!</h4>
-
-{*
-<div id="slideshow" class="images">
-        
-    {for $num = 1; $num <= 4; $num++}
-        <a class="center-block {$num == 1?'active-s':''}" href="{$basePath}/images/editorial/j{$num}.jpg"><img alt="Jindřich Čech {$num}" src="{$basePath}/images/editorial/j{$num}-m.jpg" /></a>
-    {/for}
-</div>*}
-{$editorial|noescape}
-
-{/define}
+{/snippet}

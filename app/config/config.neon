@@ -39,5 +39,7 @@ services:
 	nette.latteFactory:
 		setup:
 			- addFilter(timeInterval, @App\Helper\Helper::timeInterval)
+			- addFilter(smThumb, @App\Helper\Helper::getSmallThumb)
+			- addFilter(longThumb, @App\Helper\Helper::getLongThumb)
 			
 	- App\Helper\Helper

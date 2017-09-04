@@ -5,11 +5,9 @@ namespace App\Model;
 use Nette;
 class TextManager extends Manager{
     
-const	EDITORIAL = 1,
+const	SPOLUPRACUJEME = 1,
 	CREATIVE_COMMONS = 2,
-	KONTAKT = 3,
-	O_NAS = 4,
-	REDAKCE = 5;
+	O_NAS = 3;
 
 
     public function getText($name){

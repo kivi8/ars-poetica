@@ -50,6 +50,22 @@ class Helper extends \Nette\Object{
         return date('Y-m-d H:i:s');
     }
     
+    public static function getSmallThumb($name){
+	
+	$path = pathinfo($name);
+	return $path['dirname'].'/sm-'.$path['basename'];
+	
+    }
+    
+    public static function getLongThumb($name){
+	
+	$path = pathinfo($name);
+	return $path['dirname'].'/long-'.$path['basename'];
+	
+    }
+    
+    
+    
     public static function timeInterval($date){
         
         return (new TimeInterval())->timeInterval($date);       

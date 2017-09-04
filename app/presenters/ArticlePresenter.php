@@ -35,7 +35,7 @@ class ArticlePresenter extends BasePresenter{
         if(!$this->session->started){
             $this->session->start();
         }
-        $this->template->editorial = $this->textManager->getText(TextManager::EDITORIAL);
+
         $get = $this->getRequest()->parameters;
             
         if(isset($get['log']) && $get['log'] == 'in' && !$this->session->started){
@@ -47,7 +47,7 @@ class ArticlePresenter extends BasePresenter{
             
             $this->paginator = new Paginator;
             $this->paginator->setItemCount($this->articleManager->countNewArticleList());
-            $this->paginator->setItemsPerPage(8);
+            $this->paginator->setItemsPerPage(50);
             
             
             $this->template->articles = $this->articleManager->getNewArticleList($this->paginator);
@@ -91,11 +91,14 @@ class ArticlePresenter extends BasePresenter{
         if(!$stranka || !is_numeric($stranka)){
             throw new \Nette\Application\BadRequestException;
         }
+	
         
         $this->paginator->setPage($stranka);
         $this->stranka = $stranka;
-        $this->template->articles = $this->articleManager->getNewArticleList($this->paginator);
+        $this->template->articles = $this->articleManager->getNewArticleListAdd($this->paginator);
+	$this->redrawAjax('articles');
     }
+    
     
     private $articleDat;
     

@@ -28,8 +28,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         
         $form = new Form;
         
-        $form->addText('search', '')
-            ->setAttribute('placeholder', 'Vyhledávání');
+        $form->addText('search', '');
+           // ->setAttribute('placeholder', 'Vyhledávání');
         
         $form->addSubmit('find', '');
         

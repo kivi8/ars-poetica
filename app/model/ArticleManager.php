@@ -406,6 +406,14 @@ class ArticleManager extends Manager{
                 ->fetchAll();
     }
     
+    public function getNewArticleListAdd(\Nette\Utils\Paginator $paginator){
+        
+        return $this->articleDat()->where('deleted != 1 AND published = 1')
+                ->order('date DESC')
+                ->limit($paginator->getLength())
+                ->fetchAll();
+    }
+    
     public function countNewArticleList(){
         
         return $this->articleDat()->where('deleted != 1 AND published = 1')
@@ -595,6 +603,14 @@ class ArticleManager extends Manager{
 	}
     }
     
+    public function search($search){
+		
+	return $this->articleDat()
+		->where('title LIKE ?',"%$search%")
+		->limit(50)
+                ->fetchAll(); 
+    }
+    
     /**
          * Saves photo
          * @param string $name
@@ -604,11 +620,18 @@ class ArticleManager extends Manager{
             
             $www = __DIR__.'/../../www/media/thumbnails/';
 
-            $image = Image::fromFile($name['temp']); 
-                       
-            $image->resize(700, 466, Image::FILL)->crop('50%', '50%', 700, 466);            
-            
-            $image->save($www.$name['name']);  
+            $image1 = Image::fromFile($name['temp']); 	    	                        
+            $image1->resize(900, 600, Image::FILL)->crop('50%', '50%', 900, 600);                     
+            $image1->save($www.$name['name']); 
+	    	    
+	    $image2 = Image::fromFile($name['temp']); 
+	    $image2->resize(450, 300, Image::FILL)->crop('50%', '50%', 450, 300);                       
+            $image2->save($www.'sm-'.$name['name']); 
+	    
+	    
+	    $image3 = Image::fromFile($name['temp']); 
+	    $image3->resize(1200, 800, Image::FILL)->crop('50%', '50%', 1200, 800);                       
+            $image3->save($www.'long-'.$name['name']); 
             
             return $name['name'];
         }       

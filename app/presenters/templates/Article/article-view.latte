@@ -1,28 +1,32 @@
-<div class="article-main col-md-6">
-        
-        <a n:href="Article:article, $article->url">
-	    <img class="homepage-photos img-responsive" src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}" alt="Obrázek k článku">
-	</a>
-        
-        <div class="article-info">
-            {if $article->byUnregUser}
+<div class="article-main col-md-{isset($first) && $first?12:6}{isset($first) && $first?' article-first':''}">
+
+	<div class="article-image">
+	    <a n:href="Article:article, $article->url">
+		<img class="homepage-photos img-responsive" src="{if $article->photo}/media/thumbnails/{if isset($first) && $first}{$article->photo}{else}{$article->photo|smThumb}{/if}{else}/media/thumbnails/default.png{/if}" alt="Obrázek k článku">
+	    </a>
+	</div>
+	    
+	    
+	<div class="article-by">{include byUser}</div>
+	<div class="article-date">{$article->date|date:'%d. %m. %Y'}</div>  
+	
+        <div class="clearfix"></div>
+	
+        <div class="descTitle-container">
+	    <a class="article-title" n:href="Article:article, $article->url"><div>{$article->title}</div></a>
+	    <p class="article-desc">{$article->description}</p>
+	</div>
+	
+</div>
+
+{define byUser}
+{if $article->byUnregUser}
                 <span class="name">{$article->byUnregUser}</span>           
             {else}
                 {if $article->byUser}   
-                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($article->ref('byUser'), false)}</a> 
+                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($article->ref('byUser'), false)}</a>
                 {else}
                     <span class="name">Neregistrovany</span>
                 {/if}               
             {/if}
-            {$article->date|timeInterval} do 
-            {if $article->underSection}
-                <a n:href="Article:default, $article->ref('underSection')->url">{$article->ref('underSection')->name}</a>
-            {/if}
-        
-            {if $article->underSubSection}\ <a n:href="Article:default, $article->ref('underSubSection')->url, $article->ref('underSubSection')->url">{$article->ref('underSubSection')->name}</a>{/if}
-        </div>
-        
-        <a n:href="Article:article, $article->url"><div class="article-title">{$article->title}</div></a>
-        <div class="article-desc">{$article->description}</div>
-        <a class="article-read" n:href="Article:article, $article->url">Číst celý článek</a>
-</div> 
+{/define}

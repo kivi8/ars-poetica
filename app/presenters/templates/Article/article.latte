@@ -1,37 +1,61 @@
-{define title}{$article->title}{/define}
 {define description}{$article->description}{/define}
+{define titleMeta}{$article->title}{/define}
+{define fb}
+<meta property="og:type"               content="article" />
+<meta property="og:title"              content="{$article->title}" />
+<meta property="og:description"        content="{$article->description}" />
+<meta property="og:image"              content="https://arspoetica.net{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}" />
+{/define}
 
 {define right-column}
-<div class="admin-functions" n:if="$user->isAllowed('Article', 'add')">
+{if $user->isAllowed('Article', 'add')}
+<div class="admin-functions">
     <p><strong>Admin:</strong> <a n:href=":Admin:Article:addArticle, $article->underSection">Nový článek</a> <span n:if="$presenter->resourceAuthorizator->canUse('Article', $article->id)">| <a n:href=":Admin:Article:updateArticle, $article->id">Upravit článek</a></span></p>
 </div>    
+<hr>
+{/if}
 {/define}
 
 
 {block content}
 
+<div class="col-md-3 article-p-right" style="width: 20.5%;">
+</div>
+<div class="col-md-9 article-p-main" style="width: 79.5%;">
 {if $article->published != 1}
     <h3>Nepublikovaný</h3>
 {else}   
     
-<p>
-    <strong>Datum:</strong> {$article->date|date:'%d.%m.%Y'}
-    
-    - {$article->date|timeInterval}
-    <strong>Zobrazeno:</strong> {$article->views}x
-</p>
       
 <div class="article-head">
-    <div>
-        <img alt="Obrázek k článku" src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}">
+    <img alt="Obrázek k článku" src="{if $article->photo}/media/thumbnails/{$article->photo}{else}/media/thumbnails/default.png{/if}">
+    <div class="article-by">
+	{if $article->byUnregUser}
+                <span class="name">{$article->byUnregUser}</span>
+            {else}
+                {if $article->byUser}
+                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($article->ref('byUser'), false)}</a> 
+                {else}
+                    <span class="name">Neregistrovaný</span>
+                {/if}    
+            {/if}
+	</div>
+    <div class="article-date">
+	{$article->date|date:'%d.%m.%Y'}
     </div>
-    <p>
-        {$article->description}
-    </p>   
+    
+    <div class="clearfix"></div>
+    
+    <p class="article-title">{$article->title}</p>
+    
+    <p class="article-descrip">{$article->description}</p>   
     
 </div>  
+    
+    
+    
   
-<section class="images">
+<section class="images main-article">
     {$article->text |noescape}
 </section>
 
@@ -44,50 +68,8 @@
 	</li>
     </ol>
 </div>    
+    
 
-<div class="user-description">
-    
-    {var $usera = $article->ref('byUser')}
-    <p>Článek napsal{isset($usera->gender) && $usera->gender == 'fe'?'a'}: <strong>
-            
-            {if $article->byUnregUser}
-                <span class="name">{$article->byUnregUser}</span>
-            {else}
-                {if $article->byUser}
-                    <a class="name" n:href="User:detail, $article->byUser">{\App\Helper\Helper::combineUserName($usera, false)}</a> 
-                {else}
-                    <span class="name">Neregistrovaný</span>
-                {/if}    
-            {/if}
-
-        </strong></p>
-    
-    <div class="user-photo">
-    
-    {include '../userPhoto.latte', user => $user}
-    </div>   
-    <p class="about-user">
-        {ifset $user->about}{$user->about}{/ifset}
-    </p> 
-    
-    <div class="clearfix"></div>
-    
-</div>
-
-<ol class="breadcrumb breadcrumb-nav">
-  <li>
-      <a n:href="Homepage:">Domů</a>
-  </li>
-  <li n:if="!empty($article->underSection)">
-      <a n:href="Article:default, $article->ref('underSection')->url">{$article->ref('underSection')->name}</a>     
-  </li>
-  <li n:if="!empty($article->underSubSection)">
-      <a n:href="Article:default, $article->ref('underSection')->url, $article->ref('underSubSection')->url">{$article->ref('underSubSection')->name}</a>     
-  </li>
-  <li class="active">
-      {$article->title}
-  </li>    
-</ol> 
     <strong>Naposledy změněno:</strong> {$article->lastChange|date:'%d.%m.%Y'}
     
     {if $article->voteAllow}
@@ -100,6 +82,7 @@
         {control comments}
     {/if}
         
-  {/if}         
+  {/if}       
+</div>  
         
 

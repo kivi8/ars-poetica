@@ -24,26 +24,19 @@ class HomepagePresenter extends BasePresenter
     /** @var TextManager @inject */
     public $textManager;
     
-    public function actionKontakt() {
-
-        $this->template->_form = $this['newWriterForm'];
-    }
     
     public function renderCreativeCommons(){
 	$this->template->text = $this->textManager->getText(TextManager::CREATIVE_COMMONS);
     }
     
-    public function renderKontakt(){
-	$this->template->text = $this->textManager->getText(TextManager::KONTAKT);
+    public function renderSpolupracujeme(){
+	$this->template->text = $this->textManager->getText(TextManager::SPOLUPRACUJEME);
 	
     }
     
     public function renderONas(){
+	$this->template->_form = $this['newWriterForm'];
 	$this->template->text = $this->textManager->getText(TextManager::O_NAS);
-    }
-
-    public function renderRedakce(){
-	$this->template->text = $this->textManager->getText(TextManager::REDAKCE);
     }
 
     public function actionDefault(){

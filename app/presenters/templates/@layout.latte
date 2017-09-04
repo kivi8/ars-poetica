@@ -7,15 +7,29 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         
-        <title>{ifset title}{include title|striptags} | {/ifset}Ars poetica - zájmový on-line magazín</title>
+        <title>{ifset title}{include title|striptags} | {/ifset}{ifset titleMeta}{include titleMeta|striptags} | {/ifset}Ars poetica - zájmový on-line magazín</title>
         
         <meta n:ifset="description" name="description" content="{include description|striptags, strip}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <link rel="apple-touch-icon" href="{$basePath}/images/icon/apple-icon-180x180.png.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="{$basePath}/images/icon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="{$basePath}/images/icon/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="{$basePath}/images/icon/favicon-16x16.png">               
+	{ifset fb}{include fb}{/ifset}
+
+	<link rel="apple-touch-icon" sizes="57x57" href="{$basePath}/images/icon/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="{$basePath}/images/icon/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="{$basePath}/images/icon/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="{$basePath}/images/icon/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="{$basePath}/images/icon/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="{$basePath}/images/icon/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="{$basePath}/images/icon/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="{$basePath}/images/icon/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="{$basePath}/images/icon/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="{$basePath}/images/icon/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="{$basePath}/images/icon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="{$basePath}/images/icon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="{$basePath}/images/icon/favicon-16x16.png">
+	<link rel="manifest" href="{$basePath}/images/icon/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="{$basePath}/images/icon/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
         
         <link rel="stylesheet" href="{$basePath}/css/styles.css">
         
@@ -24,6 +38,7 @@
         <script src="{$basePath}/js/vendor/jquery.js"></script>
         <script src="{$basePath}/js/vendor/netteForms.js"></script>
         <script src="{$basePath}/js/vendor/nette.ajax.js"></script>
+	<script src="{$basePath}/js/vendor/infinitescroll.js"></script>
         <script src="{$basePath}/js/main.js"></script>
         <script src="{$basePath}/js/vendor/bootstrap.min.js"></script>
         <script src="{$basePath}/js/vendor/magnific-popup.min.js"></script>
@@ -71,55 +86,27 @@
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
         
-        <div class="container">
+        <div class="container" id="arspoetica">
             
-            <header class="col-md-12 logo-main"> 
-                                
-                <a href="/">
-                    <div class="logo-text"></div>
-                </a>
-                
-                <nav class="navbar navbar-secondary">
-                    <div class="container-fluid">                   
-                        <div class="collapse navbar-collapse" id="navbar-collapse-0">
-                
-                <ul>
-                    <li class="searchForm">
-                        {form searchForm}                                                       
-                            {input find}
-                            {input search} 
-                        {/form}
-                        
-                    </li>
-                    <li>
-                        <a n:href=":Homepage:kontakt">
-                            <div n:class="$presenter->isLinkCurrent('Homepage:kontakt')?active-top-menu">Kontakt <i class="fa fa-book fa-lg"></i></div>
-                        </a>
-                    </li>
-                    <li>
-                        <a n:href=":Homepage:o-nas">
-                            <div n:class="$presenter->isLinkCurrent('Homepage:oNas')?active-top-menu">O nás <i class="fa fa-info fa-lg"></i></div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/forum">
-                           <div>Diskuze <i class="fa fa-comments-o fa-lg"></i></div>
-                        </a>
-                    </li>
-                    <li>
-                        <a n:href=":Homepage:redakce">
-                            <div n:class="$presenter->isLinkCurrent('Homepage:redakce')?active-top-menu">Redakce <i class="fa fa-users fa-lg"></i></div>
-                        </a>
-                    </li>
-                </ul>
-                        </div>   
-                    </div>
-                </nav>
+            <header class="col-md-12">                         
+                <div class="header-left">
+		    <a href="/"><img src="{$basePath}/images/logo-min.png"></a>
+		</div>
+		
+		<div class="header-middle">
+		    <a href="/"><img src="{$basePath}/images/logo-mid.png"></a>
+		</div>
+		
+		<div class="header-right">
+		    <a href="/"><img src="{$basePath}/images/banner.png"></a>
+		</div>
+               
             </header>
                 
             <div class="clearfix"></div>  
             
-            <nav n:snippet="menu" class="navbar navbar-default navbar-static-top">
+            <nav n:snippet="menu" class="navbar navbar-default nav-all">
+
                 <div class="container-fluid">
 
                     <div class="navbar-header">
@@ -137,60 +124,78 @@
                         {foreach $menu as $menuItem} 
                             {var current = $presenter->isLinkCurrent(':Article:', ['section' => $menuItem->url])}
 
-                            <li class="{if $current}active {/if} nav-main">
+                            <li class="{if $current}active-menu{/if}">
                                 <a n:href="':Article:'.$menuItem->url">
                                     {$menuItem->name}
                                     <span n:if="$current" class="sr-only">(current)</span>
                                 </a>
                             </li>
-                        {/foreach}    
-                        </ul>      
-                                    
-                        <ul class="nav navbar-nav navbar-right">
-                                                                                  
-                            {if $user->isLoggedIn()}
-                                
-                                <li n:if="$user->isAllowed('Admin', 'can')" n:class="$presenter->isLinkCurrent(':Admin:Homepage:default')?active">
-                                    <a n:href=":Admin:Homepage:default">Administrace</a>
-                                    <span n:if="$presenter->isLinkCurrent(':Admin:Homepage:default')" class="sr-only">(current)</span>
-                                </li>                                                              
-                                         
-                                <li class="dropdown">
+			    <div class="nav-line"></div>
+                        {/foreach}  
+			
+			{foreach [':Homepage:oNas' => 'o nás', ':Homepage:spolupracujeme' => 'spolupracujeme'] as $url => $name} 
+
+                            <li class="nav-right {if $presenter->isLinkCurrent($url)}active-menu{/if}">
+                                <a n:href="$url">
+                                    {$name}
+                                    <span n:if="$current" class="sr-only">(current)</span>
+                                </a>
+                            </li>
+			    <div class="nav-line"></div>
+                        {/foreach}  
+			
+			
+				{if $user->isLoggedIn()}
+					<li>
+                                <span class="dropdown">
                                     {var userName = explode(' ', App\Helper\Helper::combineUserName($user->getIdentity()->data))}
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{$userName[1]} <span class="caret"></span></a>
                                                              
                                     <ul class="dropdown-menu">
-                                        <li n:class="$presenter->isLinkCurrent(':Setting:')?active">
+                                        <li class="nav-last {if $presenter->isLinkCurrent(':Setting:')}active-menu{/if}">
                                             <a n:href=":Setting:">Osobní nastavení</a>
                                             <span n:if="$presenter->isLinkCurrent(':Setting:')" class="sr-only">(current)</span>
                                         </li>    
+					
+					<li class="nav-last  {if $presenter->isLinkCurrent(':Admin:Homepage:default')}active-menu{/if}" n:if="$user->isAllowed('Admin', 'can')">
+					    <a n:href=":Admin:Homepage:default">Administrace</a>
+					    <span n:if="$presenter->isLinkCurrent(':Admin:Homepage:default')" class="sr-only">(current)</span>
+					</li> 
                                 
-                                        <li>
+                                        <li class="nav-last">
                                             <a n:href=":Log:out, $presenter->storeRequest()">Odhlásit <i class="fa fa-sign-out"></i></a>
                                         </li> 
                                     </ul>   
                                     
-                                    </li>
+                                    </span>
+				    </li> 
                             {else}
-                                <li n:class="$presenter->isLinkCurrent(':Log:in')?active">
-                                    <a n:href=":Log:in, $presenter->storeRequest()">Přihlásit <i class="fa fa-sign-in"></i></a>
-                                    <span n:if="$presenter->isLinkCurrent(':Log:in')" class="sr-only">(current)</span>
-                                </li>
+				<li class="nav-right {if $presenter->isLinkCurrent($url)}active-menu{/if}">
+                                    <a n:href=":Log:in, $presenter->storeRequest()" data-toggle="tooltip" title="Přihlásit se">			
+					přihlásit
+				    </a>
+				</li>  
                                 
-                                <li n:class="$presenter->isLinkCurrent(':Log:register')?active">
-                                    <a n:href=":Log:register">Registrovat</a>
-                                    <span n:if="$presenter->isLinkCurrent(':Log:register')" class="sr-only">(current)</span>
-                                <li>  
-                            {/if}  
-                            
-                            
-                        </ul>             
+                            {/if}
+			   <div class="nav-line"></div>
+			
+			
+			<li class="nav-last">			    
+			    {form searchForm}     
+				hledat
+				{input search} 
+			    {/form}
+			</li>    
+			
+                        </ul>
+					
+                                    
+                             
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
-            </nav>              
-                
-            <article class="col-md-9">
-                
+            </nav> 
+			                   
+            <article class="col-md-9" style="width: 82%;">
                 {snippet flashMessage}
                     <div n:foreach="$flashes as $flash" n:class="alert, 'alert-'.$flash->type">{$flash->message}</div>
                 {/snippet}
@@ -218,17 +223,14 @@
                 
                 
             </article>    
-                             
-            <aside class="col-md-3">                               
+                           
+            <aside id="right-panel" class="col-md-3" style="width: 18%;" >                               
+            <div data-spy="affix" data-offset-top="240">
                 
-                {ifset right-column}
-                    {include right-column}                    
+		{ifset right-column}
+                    {include right-column}   	    
                 {/ifset}      
-                 
-                <a n:href=":SendArticle:">Poslat do redakce</a>
-                
-                <hr>
-                
+                       
                 <div class="fb-page" data-href="https://www.facebook.com/arspoetica.net/" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
                     <div class="fb-xfbml-parse-ignore">
                         <blockquote cite="https://www.facebook.com/arspoetica.net/">
@@ -236,26 +238,20 @@
                         </blockquote>
                     </div>
                 </div>
-                <!--
+                {*
                 <a class="twitter-timeline"  href="https://twitter.com/Arspoeticatw" data-widget-id="714855520239292416">Tweety</a>
                 <script>!function(d,s,id){l}var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){l}js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-                -->
-                {if $presenter->isLinkCurrent('Article:default')}
+                *}
+
                 <hr>
                 <script src="https://snapwidget.com/js/snapwidget.js"></script>
-                <iframe src="https://snapwidget.com/embed/code/163494" class="snapwidget-widget" allowTransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:100%; "></iframe>
+                <iframe src="https://snapwidget.com/embed/code/163494" class="snapwidget-widget" allowTransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:205px; "></iframe>
                 <hr>
-                {/if}
-		
-                {control news}
-                                             
+                        
+		Reklama
+	    </div>
             </aside>
                            
-            
-            <footer class="col-md-12">
-                <hr>
-                <p>&copy; {date("Y")} arspoetica.net | Všechny materiály pod licencí <a n:href=":Homepage:creativeCommons">CC BY-NC-SA 3.0</a> | Kryštof Trkovský - webadmin - developer</p>
-            </footer> 
         </div>
         
          
@@ -281,8 +277,7 @@
     {ifset #script}
         {include script}
     {/ifset}  
-        
-        
+       
     
     </body>
 </html>

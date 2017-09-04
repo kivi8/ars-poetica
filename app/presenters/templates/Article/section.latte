@@ -2,18 +2,6 @@
 {define description}Sekce článků - {$section->name}{/define}
 
 {block content}
-
-<ol class="breadcrumb">
-  <li>
-      <a n:href="Homepage:">Domů</a>
-  </li>
-  <li n:if="empty($subSections)">
-      <a n:href="Article:default, $section->ref('underSection')->url">{$section->ref('underSection')->name}</a>     
-  </li>
-  <li class="active">
-      {$section->name}     
-  </li>
-</ol>
   
 <div class="section-description" n:if="$section->description">
     <span class="article-description">{$section->description}<span>

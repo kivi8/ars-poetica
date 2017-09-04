@@ -1,4 +1,12 @@
 {block title}Hledání{/block}
 
 {block content}
-Připravujeme
+
+{if $result && !$error}
+    {foreach $result as $article}
+	{include '../Article/article-view.latte', 'article'=>$article}
+    {/foreach}
+{else}
+    <h1>Bohužel jsme nic nenašli</h1>
+    <h1>{$error}</h1>
+{/if}
